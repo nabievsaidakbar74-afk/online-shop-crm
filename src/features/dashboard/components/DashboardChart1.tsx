@@ -27,6 +27,7 @@ export default function DashboardChart1() {
 
     const [week, setWeek] = useState<"this" | "last">("this")
     const { data } = useChart1Dashboard(week)
+    console.log(data)
 
     const chartData = data?.chart?.active ?? []
     const stats = data?.stats
@@ -38,7 +39,6 @@ export default function DashboardChart1() {
         { value: stats?.outOfStock ?? 0, label: "Out of Stock", bar: "bg-gray-200 dark:bg-slate-600" },
         { value: formatShort(stats?.revenue ?? 0), label: "Revenue", bar: "bg-gray-200 dark:bg-slate-600" },
     ]
-
     const peak = chartData.reduce(
         (best: any, cur: any) => (cur.value > best.value ? cur : best),
         chartData[0] ?? { day: "", value: 0 }

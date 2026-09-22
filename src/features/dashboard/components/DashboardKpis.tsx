@@ -3,7 +3,7 @@ import useDashboardKpis from '../hooks/useDashboardKpis'
 
 export default function DashboardKpis({ DetailsBtn }) {
     const { data, isLoading } = useDashboardKpis()
-
+console.log(data)
     // Ma'lumotlarni osonroq ishlatish uchun ajratib olamiz
     const kpiData = data?.data || data
 
