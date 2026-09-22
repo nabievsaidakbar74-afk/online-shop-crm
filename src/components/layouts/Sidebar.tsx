@@ -4,7 +4,7 @@ import UserImg from "../../assets/svg/userImage.png"
 import { useUser } from "../../features/auth/contexts/UserContext"
 
 export default function Sidebar({ open, setOpen }) {
-    const { user }:any = useUser()
+    const { user }: any = useUser()
 
     const navigate = useNavigate()
 
@@ -64,7 +64,14 @@ export default function Sidebar({ open, setOpen }) {
                         }
                     </div>
                 </NavLink>
-
+                <NavLink className="navbar-link" to="/banners">
+                    <div className={` text-[rgba(106,113,127,1)] ${!open && "justify-center items-center"}text-[rgba(106,113,127,1)] w-full flex gap-3 p-[9px_16px] rounded-md border-0 transition-all duration-200  hover:bg-[#daffeb] dark:hover:bg-[#1e422f] `}>
+                        <i className="bi bi-card-image"></i>
+                        {
+                            open && <p>Banners</p>
+                        }
+                    </div>
+                </NavLink>
                 <NavLink className="navbar-link" to="/categori">
                     <div className={` text-[rgba(106,113,127,1)] ${!open && "justify-center items-center"}text-[rgba(106,113,127,1)] w-full flex gap-3 p-[9px_16px] rounded-md border-0 transition-all duration-200  hover:bg-[#daffeb] dark:hover:bg-[#1e422f] `}>
                         <i className="bi bi-intersect"></i>
@@ -78,6 +85,14 @@ export default function Sidebar({ open, setOpen }) {
                         <i className="bi bi-box-seam-fill"></i>
                         {
                             open && <p>Products</p>
+                        }
+                    </div>
+                </NavLink>
+                <NavLink className="navbar-link" to="/brand">
+                    <div className={` text-[rgba(106,113,127,1)] ${!open && "justify-center items-center"}text-[rgba(106,113,127,1)] w-full flex gap-3 p-[9px_16px] rounded-md border-0 transition-all duration-200  hover:bg-[#daffeb] dark:hover:bg-[#1e422f] `}>
+                        <i className="bi bi-bookmark-check"></i>
+                        {
+                            open && <p>Brands</p>
                         }
                     </div>
                 </NavLink>

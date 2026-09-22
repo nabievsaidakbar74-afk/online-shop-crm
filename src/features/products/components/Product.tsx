@@ -1,10 +1,11 @@
-import { Table, Tag, Image, Space, ConfigProvider, theme, Button, Tooltip, Popconfirm, message } from 'antd'
+import { Table, Tag, Image, Space, Button, Tooltip, Popconfirm } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
-import { useSelector } from 'react-redux'
 import useProducts from '../hooks/useProducts'
 import { useState } from 'react'
 import ProductDrawer from './ProductDrawer'
+import useDeleteProducts from '../hooks/useDeleteProducts'
+import { useNavigate } from 'react-router-dom'
 
 interface ProductType {
   id: string
@@ -52,22 +53,17 @@ interface ProductType {
 
 export default function Product() {
 
-  const [open, setOpen] = useState(false)
+const navigate = useNavigate()
 
+  const [open, setOpen] = useState(false)
+  const { mutate } = useDeleteProducts()
 
 
   const { data, isLoading } = useProducts()
-  const isDark = useSelector((state: any) => state.theme?.isDark)
 
-  // Handlers (Tahrirlash va O'chirish funksiyalari)
-  const handleEdit = (record: ProductType) => {
-    message.info(`" ${record.name} " tahrirlash uchun tanlandi`)
-    // Bu yerga modal ochish yoki edit sahifasiga yo'naltirish kodi yoziladi
-  }
 
   const handleDelete = (id: string) => {
-    message.success("Mahsulot muvaffaqiyatli o'chirildi")
-    // Bu yerga API orqali delete so'rovini yuborish kodi yoziladi
+    mutate(id)
   }
 
   const productsList = Array.isArray(data) ? data : data?.data ?? []
@@ -189,7 +185,7 @@ export default function Product() {
               type="text"
               shape="circle"
               icon={<EditOutlined className="text-base text-blue-600 hover:text-blue-700" />}
-              onClick={() => handleEdit(record)}
+              onClick={() => navigate(record.id)}
               className="flex items-center justify-center hover:bg-blue-50 active:scale-95 transition-all duration-200"
             />
           </Tooltip>
@@ -217,78 +213,43 @@ export default function Product() {
       ),
     },
   ]
-
   return (
-    <ConfigProvider
-      theme={{
-        algorithm: isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
-        token: {
-          colorPrimary: "#4EA674",
-          borderRadius: 12,
-          colorBgContainer: isDark ? "#1e293b" : "#ffffff",
-          colorText: isDark ? "#e5e7eb" : "#111827",
-          colorTextSecondary: isDark ? "#94a3b8" : "#6b7280",
-          colorBorder: isDark ? "#334155" : "#e5e7eb",
-        },
-        components: {
-          Table: {
-            headerBg: isDark ? "#334155" : "#F6FBF8",
-            headerColor: isDark ? "#cbd5e1" : "#6b7280",
-            rowHoverBg: isDark ? "#334155" : "#f9fafb",
-            borderColor: isDark ? "#334155" : "#f3f4f6",
-            colorBgContainer: isDark ? "#1e293b" : "#ffffff",
-          },
-          Pagination: {
-            itemActiveBg: "#4EA674",
-            colorText: isDark ? "#e5e7eb" : "#374151",
-          },
-          Button: {
-            colorPrimary: "#4EA674",
-            colorPrimaryHover: "#5bb882",
-            colorPrimaryActive: "#3d8b5f",
-            primaryColor: "#ffffff",
-          },
-        },
-      }}
-    >
-      <div className="p-5 space-y-5 overflow-y-auto h-[calc(100vh-6rem)] bg-[#F3F4F6] dark:bg-slate-900">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <span className="w-11 h-11 shrink-0 rounded-2xl bg-[#4EA674]/10 text-[#4EA674] flex items-center justify-center text-lg">
-              <i className="bi bi-box-seam" />
-            </span>
-            <div>
-              <h1 className="text-xl font-bold text-gray-900 dark:text-white">Products List</h1>
-              <p className="text-xs text-gray-400 dark:text-slate-400">
-                Manage and view all your store products
-              </p>
-            </div>
+    <div className="p-5 space-y-5 overflow-y-auto h-[calc(100vh-6rem)] bg-[#F3F4F6] dark:bg-slate-900">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <span className="w-11 h-11 shrink-0 rounded-2xl bg-[#4EA674]/10 text-[#4EA674] flex items-center justify-center text-lg">
+            <i className="bi bi-box-seam" />
+          </span>
+          <div>
+            <h1 className="text-xl font-bold text-gray-900 dark:text-white">Products List</h1>
+            <p className="text-xs text-gray-400 dark:text-slate-400">
+              Manage and view all your store products
+            </p>
           </div>
+        </div>
 
-          <button
+        <button
           onClick={() => setOpen(state => !state)}
-            type="button"
-            className="inline-flex items-center gap-2 rounded-full bg-[#4EA674] px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#3d8b5f]"
-          >
-            <i className="bi bi-plus-lg" /> Add Product
-          </button>
-        </div>
-
-        <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)] dark:border-slate-700/60 dark:bg-slate-800 dark:shadow-none">
-          <div className="overflow-x-auto">
-            <Table
-              columns={columns}
-              dataSource={productsList}
-              loading={isLoading}
-              rowKey="id"
-              pagination={{ pageSize: 10, showSizeChanger: false }}
-              scroll={{ x: 950 }}
-            />
-            <ProductDrawer open={open} setOpen={setOpen}/>
-          </div>
-        </div>
+          type="button"
+          className="inline-flex items-center gap-2 rounded-full bg-[#4EA674] px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#3d8b5f]"
+        >
+          <i className="bi bi-plus-lg" /> Add Product
+        </button>
       </div>
 
-    </ConfigProvider>
+      <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)] dark:border-slate-700/60 dark:bg-slate-800 dark:shadow-none">
+        <div className="overflow-x-auto">
+          <Table
+            columns={columns}
+            dataSource={productsList}
+            loading={isLoading}
+            rowKey="id"
+            pagination={{ pageSize: 10, showSizeChanger: false }}
+            scroll={{ x: 950 }}
+          />
+          <ProductDrawer open={open} setOpen={setOpen} />
+        </div>
+      </div>
+    </div>
   )
 }

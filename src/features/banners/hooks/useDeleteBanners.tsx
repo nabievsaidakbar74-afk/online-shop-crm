@@ -2,16 +2,16 @@ import { useMutation , useQueryClient} from "@tanstack/react-query"
 import api from "../../../services/api"
 import { message } from "antd"
 
-const useDeleteCategory = () => {
+const useDeleteBanners = () => {
 
 const query = useQueryClient()
 
     const { mutate, isPending, variables } = useMutation({
-        mutationKey: ["remove-category"],
-        mutationFn: (id: string) => api.delete(`/admin/categories/${id}`),
+        mutationKey: ["remove-banners"],
+        mutationFn: (id: string) => api.delete(`/admin/banners/${id}`),
         onSuccess: () => {
-            message.success("Category deleted")
-            query.invalidateQueries({queryKey:["categories"]})
+            message.success("banner deleted")
+            query.invalidateQueries({queryKey:["banners"]})
         },
         onError: () => {
             message.error("Error")
@@ -20,4 +20,4 @@ const query = useQueryClient()
     })
     return { mutate, isPending, variables }
 }
-export default useDeleteCategory
+export default useDeleteBanners

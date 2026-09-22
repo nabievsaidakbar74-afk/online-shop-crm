@@ -18,7 +18,5 @@ const useCreateCategories = () => {
         }
     })
     return { data, isPending, mutate }
-
 }
-
 export default useCreateCategories

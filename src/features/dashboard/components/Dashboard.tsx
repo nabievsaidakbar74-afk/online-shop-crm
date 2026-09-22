@@ -1,27 +1,14 @@
-import { useSelector } from "react-redux"
+// import { useSelector } from "react-redux"
 import {
   Bar,
   BarChart,
-  CartesianGrid,
-  Line,
-  LineChart,
-  ReferenceDot,
-  ReferenceLine,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts"
 
-const weekData = [
-  { day: "Sun", value: 16 },
-  { day: "Mon", value: 4 },
-  { day: "Tue", value: 16 },
-  { day: "Wed", value: 20 },
-  { day: "Thu", value: 10 },
-  { day: "Fri", value: 30 },
-  { day: "Sat", value: 40 },
-]
+  ResponsiveContainer,
+
+} from "recharts"
+import DashboardChart1 from "./DashboardChart1"
+import DashboardKpis from "./DashboardKpis.tsx"
+
 
 const userMinuteData = [
   18, 28, 22, 35, 42, 30, 25, 38, 48, 32, 20, 36, 44, 26, 18, 30, 40, 22, 16,
@@ -47,13 +34,7 @@ const countries = [
   { name: "Australia", flag: "🇦🇺", value: "25K", pct: "-35.9%", width: "48%" },
 ]
 
-const weekStats = [
-  { value: "52k", label: "Customers", bar: "bg-[#4EA674]" },
-  { value: "3.5k", label: "Total Products", bar: "bg-gray-200 dark:bg-slate-600" },
-  { value: "2.5k", label: "Stock Products", bar: "bg-gray-200 dark:bg-slate-600" },
-  { value: "0.5k", label: "Out of Stock", bar: "bg-gray-200 dark:bg-slate-600" },
-  { value: "250k", label: "Revenue", bar: "bg-gray-200 dark:bg-slate-600" },
-]
+
 
 function Card({ children }: { children: React.ReactNode }) {
   return (
@@ -72,146 +53,14 @@ function DetailsBtn() {
 }
 
 export default function Dashboard() {
-  const isDark = useSelector((state) => state.theme.isDark)
-  const axis = isDark ? "#94a3b8" : "#9ca3af"
-  const grid = isDark ? "#334155" : "#f3f4f6"
 
   return (
     <div className="p-5 space-y-4 bg-[#F3F4F6] dark:bg-slate-900 overflow-y-auto h-[calc(100vh-6rem)] ">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <Card>
-          <div className="flex justify-between items-start">
-            <div>
-              <p className="font-medium text-gray-900 dark:text-white">Total Sales</p>
-              <p className="text-sm text-gray-400 mt-1">Last 7 days</p>
-            </div>
-            <i className="bi bi-three-dots-vertical text-gray-400 cursor-pointer"></i>
-          </div>
-          <div className="flex items-end gap-3 mt-4">
-            <p className="text-[32px] leading-none font-semibold text-gray-900 dark:text-white">$350K</p>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
-              sales <span className="text-[#21C45D]"><i className="bi bi-arrow-up"></i> 10.4%</span>
-            </p>
-          </div>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">
-            Previous 7 days <span className="text-[#6467F2]">($235)</span>
-          </p>
-          <div className="flex justify-end mt-5">
-            <DetailsBtn />
-          </div>
-        </Card>
-
-        <Card>
-          <div className="flex justify-between items-start">
-            <div>
-              <p className="font-medium text-gray-900 dark:text-white">Total Orders</p>
-              <p className="text-sm text-gray-400 mt-1">Last 7 days</p>
-            </div>
-            <i className="bi bi-three-dots-vertical text-gray-400 cursor-pointer"></i>
-          </div>
-          <div className="flex items-end gap-3 mt-4">
-            <p className="text-[32px] leading-none font-semibold text-gray-900 dark:text-white">10.7K</p>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
-              order <span className="text-[#21C45D]"><i className="bi bi-arrow-up"></i> 14.4%</span>
-            </p>
-          </div>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">
-            Previous 7 days <span className="text-[#6467F2]">(7.6K)</span>
-          </p>
-          <div className="flex justify-end mt-5">
-            <DetailsBtn />
-          </div>
-        </Card>
-
-        <Card>
-          <div className="flex justify-between items-start">
-            <div>
-              <p className="font-medium text-gray-900 dark:text-white">Pending & Canceled</p>
-              <p className="text-sm text-gray-400 mt-1">Last 7 days</p>
-            </div>
-            <i className="bi bi-three-dots-vertical text-gray-400 cursor-pointer"></i>
-          </div>
-          <div className="flex items-center justify-between mt-5 gap-4">
-            <div>
-              <p className="text-sm text-gray-400 mb-1">pending</p>
-              <p className="text-[22px] font-semibold text-gray-900 dark:text-white">
-                509 <span className="text-sm font-normal text-[#4EA674]">user 204</span>
-              </p>
-            </div>
-            <div className="w-px h-10 bg-gray-200 dark:bg-slate-600"></div>
-            <div>
-              <p className="text-sm text-gray-400 mb-1">Canceled</p>
-              <p className="text-[22px] font-semibold text-red-400">
-                94 <span className="text-sm font-normal"><i className="bi bi-arrow-down"></i> 14.4%</span>
-              </p>
-            </div>
-          </div>
-          <div className="flex justify-end mt-6">
-            <DetailsBtn />
-          </div>
-        </Card>
-      </div>
+      <DashboardKpis DetailsBtn={DetailsBtn}/>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
         <div className="xl:col-span-2">
-          <Card>
-            <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-              <p className="font-medium text-gray-900 dark:text-white">Report for this week</p>
-              <div className="flex rounded-full bg-gray-100 dark:bg-slate-700 p-1 text-xs">
-                <button className="px-3 py-1 rounded-full bg-white dark:bg-slate-600 text-gray-800 dark:text-white shadow-sm">This week</button>
-                <button className="px-3 py-1 rounded-full text-gray-400">Last week</button>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 mb-6">
-              {weekStats.map((item) => (
-                <div key={item.label}>
-                  <p className="text-lg font-semibold text-gray-900 dark:text-white">{item.value}</p>
-                  <p className="text-xs text-gray-400 mb-2">{item.label}</p>
-                  <div className={`h-1 rounded-full ${item.bar}`}></div>
-                </div>
-              ))}
-            </div>
-            <div className="h-56">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={weekData} margin={{ top: 24, right: 12, left: -16, bottom: 0 }}>
-                  <CartesianGrid stroke={grid} vertical={false} />
-                  <XAxis dataKey="day" tick={{ fill: axis, fontSize: 12 }} axisLine={false} tickLine={false} />
-                  <YAxis
-                    domain={[0, 10]}
-                    ticks={[0, 10, 20, 30, 40, 50]}
-                    tickFormatter={(v) => `${v}k`}
-                    tick={{ fill: axis, fontSize: 11 }}
-                    axisLine={false}
-                    tickLine={false}
-                  />
-                  <Tooltip
-                    formatter={(value) => [`${value}k`, "Revenue"]}
-                    contentStyle={{
-                      background: isDark ? "#1e293b" : "#fff",
-                      border: "1px solid #e5e7eb",
-                      borderRadius: 8,
-                      color: isDark ? "#fff" : "#111",
-                    }}
-                  />
-                  <ReferenceLine x="Thu" stroke="#4EA674" strokeDasharray="4 4" />
-                  <Line type="monotone" dataKey="value" stroke="#86EFAC" strokeWidth={3} dot={false} />
-                  <ReferenceDot
-                    x="Thu"
-                    y={38}
-                    r={5}
-                    fill="#4EA674"
-                    stroke="#fff"
-                    label={{
-                      value: "Thursday 14k",
-                      position: "top",
-                      fill: "#4EA674",
-                      fontSize: 11,
-                    }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </Card>
+          <DashboardChart1 />
         </div>
 
         <Card>

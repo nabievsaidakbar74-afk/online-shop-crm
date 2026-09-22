@@ -3,7 +3,7 @@ import api from "../../../services/api";
 
 const useCustomer = () => {
     const { data, isLoading } = useQuery({
-        queryKey: ["categories"],
+        queryKey: ["customers"],
         queryFn: () => api.get("/admin/customers").then(res => res?.data)
     })
     return { data, isLoading }

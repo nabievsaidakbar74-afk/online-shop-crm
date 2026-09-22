@@ -2,10 +2,10 @@ import { useQuery } from "@tanstack/react-query";
 import api from "../../../services/api";
 
 const useBrands = () => {
-    const { data, isLoading } = useQuery({
+    const { data, isLoading, isFetching, isError, refetch } = useQuery({
         queryKey: ["brands"],
         queryFn: () => api.get("/admin/brands").then(res => res?.data)
     })
-    return { data, isLoading }
+    return { data, isLoading, isFetching, isError, refetch }
 }
 export default useBrands
