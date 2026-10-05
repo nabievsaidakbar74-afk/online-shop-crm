@@ -98,7 +98,7 @@ export default function DashboardCatalog() {
   const products = usingFallbackProducts ? fallbackProducts : liveProducts
 
   return (
-    <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
       <section className="surface flex min-h-[320px] flex-col p-4 sm:p-5">
         <div className="mb-3 flex items-center justify-between gap-3">
           <h2 className="text-[15px] font-bold tracking-[-0.02em] text-ink">Quick Add Categories</h2>

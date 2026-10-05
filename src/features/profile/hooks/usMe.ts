@@ -2,10 +2,13 @@ import { useQuery } from "@tanstack/react-query";
 import api from "../../../services/api";
 
 const useMe = () => {
-    const { data, isLoading } = useQuery({
+    const hasToken = Boolean(localStorage.getItem("crmAccessToken"))
+    const query = useQuery({
         queryKey: ["me"],
+        enabled: hasToken,
+        retry: false,
         queryFn: () => api.get("/admin/auth/me").then(res => res?.data)
     })
-    return { data, isLoading }
+    return query
 }
 export default useMe

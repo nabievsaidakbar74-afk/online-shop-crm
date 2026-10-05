@@ -48,39 +48,39 @@ export default function Header({ onMenu }: { onMenu: () => void }) {
 
     return (
         <>
-        <header className="bar-h flex shrink-0 items-center justify-between gap-3 border-b border-line bg-surface px-4 md:px-6">
-            <div className="flex min-w-0 items-center gap-2">
-                <button type="button" onClick={onMenu} className="icon-btn lg:hidden" aria-label="Open menu">
+        <header className="bar-h flex shrink-0 items-center justify-between gap-2 border-b border-line bg-surface px-3 sm:gap-3 sm:px-4 md:px-6">
+            <div className="flex min-w-0 flex-1 items-center gap-1.5 sm:gap-2">
+                <button type="button" onClick={onMenu} className="icon-btn shrink-0 lg:hidden" aria-label="Open menu">
                     <i className="bi bi-list text-lg" />
                 </button>
-                <h1 className="truncate text-[17px] font-bold tracking-[-0.03em] text-ink">{title}</h1>
+                <h1 className="truncate text-[15px] font-bold tracking-[-0.03em] text-ink sm:text-[17px]">{title}</h1>
             </div>
 
-            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex shrink-0 items-center gap-1 sm:gap-2">
                 <button
                     type="button"
                     onClick={() => setPaletteOpen(true)}
-                    className="search-field hidden w-[220px] text-left md:flex lg:w-[260px]"
+                    className="search-field hidden w-[220px] text-left lg:flex xl:w-[260px]"
                 >
                     <i className="bi bi-search text-sm text-faint" />
                     <span className="flex-1 text-[13px] text-faint">Search</span>
-                    <kbd className="kbd">Ctrl K</kbd>
+                    <kbd className="kbd hidden xl:inline-flex">Ctrl K</kbd>
                 </button>
                 <button
                     type="button"
                     onClick={() => setPaletteOpen(true)}
-                    className="icon-btn md:hidden"
+                    className="icon-btn shrink-0 lg:hidden"
                     aria-label="Search"
                 >
                     <i className="bi bi-search" />
                 </button>
-                <button type="button" className="icon-btn" aria-label="Notifications">
+                <button type="button" className="icon-btn hidden shrink-0 sm:inline-flex" aria-label="Notifications">
                     <i className="bi bi-bell" />
                 </button>
                 <button
                     type="button"
                     onClick={() => dispatch(actionTheme.toggleTheme())}
-                    className={`relative flex h-8 w-14 items-center rounded-full p-1 transition-colors duration-200 ${isDark ? "bg-[#243042]" : "bg-brand-soft"}`}
+                    className={`relative flex h-8 w-14 shrink-0 items-center rounded-full p-1 transition-colors duration-200 ${isDark ? "bg-[#243042]" : "bg-brand-soft"}`}
                     aria-label="Toggle theme"
                 >
                     <span
@@ -92,7 +92,7 @@ export default function Header({ onMenu }: { onMenu: () => void }) {
                 <img
                     src={user?.avatar || UserImg}
                     alt=""
-                    className="h-9 w-9 rounded-full object-cover ring-1 ring-line"
+                    className="h-8 w-8 shrink-0 rounded-full object-cover ring-1 ring-line sm:h-9 sm:w-9"
                 />
             </div>
         </header>

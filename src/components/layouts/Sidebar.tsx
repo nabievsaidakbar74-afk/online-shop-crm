@@ -1,4 +1,5 @@
 import type { Dispatch, SetStateAction } from "react"
+import { useQueryClient } from "@tanstack/react-query"
 import { NavLink, useLocation, useNavigate } from "react-router-dom"
 import LOGO from "../../assets/svg/DealPort.svg"
 import MARK from "../../assets/svg/DealPortMark.svg"
@@ -25,6 +26,7 @@ type SidebarProps = {
 
 export default function Sidebar({ expanded, setExpanded, mobileOpen, onNavigate }: SidebarProps) {
     const { user } = useUser()
+    const queryClient = useQueryClient()
     const navigate = useNavigate()
     const { pathname } = useLocation()
     const showLabels = expanded || mobileOpen
@@ -32,7 +34,8 @@ export default function Sidebar({ expanded, setExpanded, mobileOpen, onNavigate 
     const handleLogout = () => {
         localStorage.removeItem("crmAccessToken")
         localStorage.removeItem("crmRefreshToken")
-        navigate("/login")
+        queryClient.clear()
+        navigate("/login", { replace: true })
     }
 
     return (

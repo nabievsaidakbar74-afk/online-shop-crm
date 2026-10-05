@@ -98,7 +98,7 @@ export default function CommandPalette({ onClose }: { onClose: () => void }) {
             placeholder="Sahifa yoki create qidiring..."
             className="h-12 w-full border-0 bg-transparent text-sm text-ink outline-none placeholder:text-faint"
           />
-          <kbd className="kbd">esc</kbd>
+          <kbd className="kbd hidden xl:inline-flex">esc</kbd>
         </label>
 
         <div className="rail max-h-[380px] overflow-y-auto p-2">

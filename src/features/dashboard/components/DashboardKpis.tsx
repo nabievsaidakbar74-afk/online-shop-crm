@@ -22,7 +22,7 @@ export default function DashboardKpis({ DetailsBtn }: { DetailsBtn?: ComponentTy
 
     if (isLoading) {
         return (
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
                 {[0, 1, 2].map((item) => (
                     <div key={item} className="skeleton h-44" />
                 ))}
@@ -31,7 +31,7 @@ export default function DashboardKpis({ DetailsBtn }: { DetailsBtn?: ComponentTy
     }
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {/* 1. TOTAL SALES CARD */}
             <Card>
                 <div className="flex justify-between items-start">

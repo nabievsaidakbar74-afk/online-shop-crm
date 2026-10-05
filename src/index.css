@@ -78,7 +78,7 @@ select {
   overflow-y: auto;
   background: var(--canvas);
   color: var(--ink);
-  padding: 1rem;
+  padding: 0.75rem;
 }
 
 @media (min-width: 768px) {
@@ -225,6 +225,7 @@ select {
   color: var(--brand);
 }
 
+@layer components {
 .search-field {
   display: flex;
   align-items: center;
@@ -254,6 +255,7 @@ select {
 
 .search-field input::placeholder {
   color: var(--faint);
+}
 }
 
 .badge {
