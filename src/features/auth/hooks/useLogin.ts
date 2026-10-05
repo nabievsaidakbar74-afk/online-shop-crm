@@ -7,7 +7,7 @@ const useLogin = () => {
     const navigate = useNavigate()
     const { isPending, mutate } = useMutation({
         mutationKey: ["login"],
-        mutationFn: (data: any) => api.post("/admin/auth/login", data).then(res => res.data),
+        mutationFn: (data: { email: string; password: string }) => api.post("/admin/auth/login", data).then(res => res.data),
         onSuccess: (data) => {
             localStorage.setItem("crmAccessToken", data?.data?.accessToken)
             localStorage.setItem("crmRefreshToken", data?.data?.refreshToken)

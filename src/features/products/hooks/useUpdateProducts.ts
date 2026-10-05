@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import api from "../../../services/api";
 import { message } from "antd";
+import { apiErrorMessage } from "../../../services/apiError";
 
 
 const useUpdateProducts = () => {
@@ -16,8 +17,8 @@ const useUpdateProducts = () => {
             query.invalidateQueries({ queryKey: ["products"] })
             query.invalidateQueries({ queryKey: ["product-details", id] })
         },
-        onError: (err: any) => {
-            message.error(err?.response?.data?.message ?? "Mahsulotni tahrirlashda xatolik")
+        onError: (err: unknown) => {
+            message.error(apiErrorMessage(err, "Mahsulotni tahrirlashda xatolik"))
         }
     })
     return { data, isPending, mutate }

@@ -74,7 +74,7 @@ export default function Profile() {
       ? new Date(value).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
       : "—"
 
-  const handleProfileFinish = (values: any) => {
+  const handleProfileFinish = (values: { firstName: string; lastName: string; phone?: string; avatar?: string }) => {
     updateProfile({
       firstName: values.firstName,
       lastName: values.lastName,
@@ -83,7 +83,7 @@ export default function Profile() {
     })
   }
 
-  const handlePasswordFinish = (values: any) => {
+  const handlePasswordFinish = (values: { currentPassword: string; newPassword: string }) => {
     updatePassword(
       { currentPassword: values.currentPassword, newPassword: values.newPassword },
       { onSuccess: () => passwordForm.resetFields() }

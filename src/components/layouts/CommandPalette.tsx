@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, type NavigateFunction } from "react-router-dom"
 
 type PaletteItem = {
   id: string
@@ -8,6 +8,7 @@ type PaletteItem = {
   icon: string
   to: string
   group: "Pages" | "Create"
+  create?: boolean
 }
 
 const items: PaletteItem[] = [
@@ -19,13 +20,18 @@ const items: PaletteItem[] = [
   { id: "banner", label: "Banner", hint: "Marketing", icon: "bi-card-image", to: "/banners", group: "Pages" },
   { id: "brands", label: "Brands", hint: "Catalog", icon: "bi-bookmark", to: "/brand", group: "Pages" },
   { id: "profile", label: "Profile", hint: "Account", icon: "bi-person", to: "/profile", group: "Pages" },
-  { id: "add-product", label: "Add Product", hint: "Create", icon: "bi-plus-circle", to: "/product?create=1", group: "Create" },
-  { id: "add-category", label: "Add Category", hint: "Create", icon: "bi-plus-circle", to: "/categori?create=1", group: "Create" },
-  { id: "add-brand", label: "Add Brand", hint: "Create", icon: "bi-plus-circle", to: "/brand?create=1", group: "Create" },
-  { id: "add-banner", label: "Add Banner", hint: "Create", icon: "bi-plus-circle", to: "/banners?create=1", group: "Create" },
+  { id: "add-product", label: "Add Product", hint: "Create", icon: "bi-plus-circle", to: "/product", group: "Create", create: true },
+  { id: "add-category", label: "Add Category", hint: "Create", icon: "bi-plus-circle", to: "/categori", group: "Create", create: true },
+  { id: "add-brand", label: "Add Brand", hint: "Create", icon: "bi-plus-circle", to: "/brand", group: "Create", create: true },
+  { id: "add-banner", label: "Add Banner", hint: "Create", icon: "bi-plus-circle", to: "/banners", group: "Create", create: true },
 ]
 
-export default function CommandPalette({ open, onClose }: { open: boolean; onClose: () => void }) {
+function openItem(navigate: NavigateFunction, item: PaletteItem) {
+  if (item.create) navigate(item.to, { state: { create: Date.now() } })
+  else navigate(item.to)
+}
+
+export default function CommandPalette({ onClose }: { onClose: () => void }) {
   const navigate = useNavigate()
   const inputRef = useRef<HTMLInputElement>(null)
   const [query, setQuery] = useState("")
@@ -40,19 +46,11 @@ export default function CommandPalette({ open, onClose }: { open: boolean; onClo
   }, [query])
 
   useEffect(() => {
-    if (!open) return
-    setQuery("")
-    setActive(0)
     const frame = requestAnimationFrame(() => inputRef.current?.focus())
     return () => cancelAnimationFrame(frame)
-  }, [open])
+  }, [])
 
   useEffect(() => {
-    setActive(0)
-  }, [query])
-
-  useEffect(() => {
-    if (!open) return
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         event.preventDefault()
@@ -69,15 +67,13 @@ export default function CommandPalette({ open, onClose }: { open: boolean; onClo
       }
       if (event.key === "Enter" && results[active]) {
         event.preventDefault()
-        navigate(results[active].to)
+        openItem(navigate, results[active])
         onClose()
       }
     }
     window.addEventListener("keydown", onKey)
     return () => window.removeEventListener("keydown", onKey)
-  }, [open, results, active, navigate, onClose])
-
-  if (!open) return null
+  }, [results, active, navigate, onClose])
 
   const groups: Array<"Pages" | "Create"> = ["Pages", "Create"]
 
@@ -95,7 +91,10 @@ export default function CommandPalette({ open, onClose }: { open: boolean; onClo
           <input
             ref={inputRef}
             value={query}
-            onChange={(event) => setQuery(event.target.value)}
+            onChange={(event) => {
+              setQuery(event.target.value)
+              setActive(0)
+            }}
             placeholder="Sahifa yoki create qidiring..."
             className="h-12 w-full border-0 bg-transparent text-sm text-ink outline-none placeholder:text-faint"
           />
@@ -123,7 +122,7 @@ export default function CommandPalette({ open, onClose }: { open: boolean; onClo
                         type="button"
                         onMouseEnter={() => setActive(index)}
                         onClick={() => {
-                          navigate(item.to)
+                          openItem(navigate, item)
                           onClose()
                         }}
                         className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors ${

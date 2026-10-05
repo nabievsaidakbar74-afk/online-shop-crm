@@ -4,11 +4,12 @@ import { ConfigProvider, theme } from "antd"
 import { useSelector } from "react-redux"
 import IndexRoute from "./routes/IndexRoute"
 import UserProvider from "./features/auth/contexts/UserContext"
+import type { RootState } from "./store"
 
 const queryClient = new QueryClient()
 
 function App() {
-  const isDark = useSelector((state: any) => state.theme?.isDark)
+  const isDark = useSelector((state: RootState) => state.theme.isDark)
 
   return (
     <ConfigProvider

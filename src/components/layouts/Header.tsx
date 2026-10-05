@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux"
 import UserImg from "../../assets/svg/userImage.png"
 import { actionTheme } from "../../store"
 import { useLocation } from "react-router-dom"
-import { useUser } from "../../features/auth/contexts/UserContext"
+import { useUser } from "../../features/auth/user"
 import CommandPalette from "./CommandPalette"
 
 const titles: Record<string, string> = {
@@ -28,7 +28,7 @@ function resolveTitle(pathname: string) {
 }
 
 export default function Header({ onMenu }: { onMenu: () => void }) {
-    const { user }: any = useUser()
+    const { user } = useUser()
     const { pathname } = useLocation()
     const title = resolveTitle(pathname)
     const isDark = useSelector((state: { theme: { isDark: boolean } }) => state.theme.isDark)
@@ -96,7 +96,7 @@ export default function Header({ onMenu }: { onMenu: () => void }) {
                 />
             </div>
         </header>
-        <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
+        {paletteOpen && <CommandPalette onClose={() => setPaletteOpen(false)} />}
         </>
     )
 }

@@ -19,12 +19,55 @@ interface OptionType {
     name: string
 }
 
+type DrawerImage = {
+    url?: string
+    alt?: string
+    isMain?: boolean
+    sortOrder?: number
+}
+
+type DrawerVariant = {
+    sku?: string
+    price?: number
+    stock?: number
+    isActive?: boolean
+    attributes?: {
+        storage?: string
+        ram?: string
+    }
+}
+
+type DrawerProduct = {
+    id: string
+    name?: string
+    slug?: string
+    sku?: string
+    barcode?: string
+    shortDescription?: string
+    description?: string
+    brandId?: string
+    categoryId?: string
+    price?: number
+    oldPrice?: number
+    discountPercent?: number
+    stock?: number
+    lowStockThreshold?: number
+    isActive?: boolean
+    isFeatured?: boolean
+    isNew?: boolean
+    isPopular?: boolean
+    images?: DrawerImage[]
+    variants?: DrawerVariant[]
+}
+
+type ProductFormValues = Omit<DrawerProduct, "id">
+
 interface ProductDrawerProps {
     open: boolean
     setOpen: (open: boolean) => void
-    product?: any
+    product?: DrawerProduct
     onClose?: () => void
-    onSubmit?: (values: any) => void
+    onSubmit?: (values: ProductFormValues) => void
 }
 
 const sectionCard =
@@ -131,13 +174,13 @@ export default function ProductDrawer({
             isFeatured: product.isFeatured,
             isNew: product.isNew,
             isPopular: product.isPopular,
-            images: (product.images ?? []).map((img: any, index: number) => ({
+            images: (product.images ?? []).map((img, index: number) => ({
                 url: img?.url,
                 alt: img?.alt ?? '',
                 isMain: !!img?.isMain,
                 sortOrder: img?.sortOrder ?? index,
             })),
-            variants: (product.variants ?? []).map((variant: any) => ({
+            variants: (product.variants ?? []).map((variant) => ({
                 sku: variant?.sku,
                 price: variant?.price ?? 0,
                 stock: variant?.stock ?? 0,
@@ -156,18 +199,18 @@ export default function ProductDrawer({
         onClose?.()
     }
 
-    const handleFinish = (values: any) => {
-        const payload: any = {
+    const handleFinish = (values: ProductFormValues) => {
+        const payload: ProductFormValues = {
             ...values,
             images: (values.images ?? [])
-                .filter((img: any) => img?.url)
-                .map((img: any, index: number) => ({
+                .filter((img) => img?.url)
+                .map((img, index: number) => ({
                     url: img.url,
                     alt: img.alt ?? '',
                     isMain: !!img.isMain,
                     sortOrder: img.sortOrder ?? index,
                 })),
-            variants: (values.variants ?? []).map((variant: any) => ({
+            variants: (values.variants ?? []).map((variant) => ({
                 sku: variant?.sku,
                 price: variant?.price ?? 0,
                 stock: variant?.stock ?? 0,

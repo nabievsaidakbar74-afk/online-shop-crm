@@ -12,7 +12,7 @@ export interface CategoryType {
     updatedAt: string;
     parent: CategoryType | null;
     children: CategoryType[];
-    products: any[];
+    products: unknown[];
     _count: {
         products: number;
         children: number;

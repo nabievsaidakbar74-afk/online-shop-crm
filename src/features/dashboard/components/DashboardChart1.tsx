@@ -28,7 +28,7 @@ export default function DashboardChart1() {
     const [week, setWeek] = useState<"this" | "last">("this")
     const { data } = useChart1Dashboard(week)
 
-    const chartData = data?.chart?.active ?? []
+    const chartData: Array<{ day?: string; value?: number }> = data?.chart?.active ?? []
     const stats = data?.stats
 
     const weekStats = [
@@ -39,7 +39,7 @@ export default function DashboardChart1() {
         { value: formatShort(stats?.revenue ?? 0), label: "Revenue", bar: "bg-line" },
     ]
     const peak = chartData.reduce(
-        (best: any, cur: any) => (cur.value > best.value ? cur : best),
+        (best, cur) => (Number(cur.value) > Number(best.value) ? cur : best),
         chartData[0] ?? { day: "", value: 0 }
     )
 
@@ -97,11 +97,11 @@ export default function DashboardChart1() {
                         />
                         <Line type="monotone" dataKey="value" stroke="#2E9A62" strokeWidth={2.5} dot={false} />
 
-                        {peak.value > 0 && (
+                        {Number(peak.value) > 0 && (
                             <>
                                 <ReferenceLine x={peak.day} stroke="#2E9A62" strokeDasharray="4 4" />
-                                <ReferenceDot x={peak.day} y={peak.value} r={5} fill="#2E9A62" stroke="#fff"
-                                    label={{ value: `${peak.day} ${formatShort(peak.value)}`, position: "top", fill: "#2E9A62", fontSize: 11 }}
+                                <ReferenceDot x={peak.day} y={Number(peak.value)} r={5} fill="#2E9A62" stroke="#fff"
+                                    label={{ value: `${peak.day} ${formatShort(Number(peak.value))}`, position: "top", fill: "#2E9A62", fontSize: 11 }}
                                 />
                             </>
                         )}

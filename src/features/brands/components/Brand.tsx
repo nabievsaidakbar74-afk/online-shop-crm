@@ -1,5 +1,11 @@
-import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import type { BrandPayload } from '../hooks/useCreateBrand';
+
+type BrandRecord = BrandPayload & {
+  id: string
+  createdAt?: string
+}
 import { Table, Tag, Image, Button, Form, Popconfirm, Tooltip } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import useBrands from '../hooks/useBrands';
@@ -14,14 +20,23 @@ export default function Brand() {
   const { mutate: createBrand, isPending: isCreating } = useCreateBrand();
   const { mutate: updateBrand, isPending: isUpdating } = useUpdateBrand();
   const { mutate: deleteBrand, isPending: isDeleting, deletingId } = useDeleteBrand();
+  const location = useLocation();
+  const createToken = typeof (location.state as { create?: unknown } | null)?.create === "number"
+    ? (location.state as { create: number }).create
+    : null;
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingBrand, setEditingBrand] = useState<any>(null);
+  const [editingBrand, setEditingBrand] = useState<BrandRecord | null>(null);
   const [form] = Form.useForm();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [seenCreate, setSeenCreate] = useState<number | null>(null);
+  if (createToken !== null && createToken !== seenCreate) {
+    setSeenCreate(createToken);
+    setEditingBrand(null);
+    setIsModalOpen(true);
+  }
 
   const logo = Form.useWatch('logo', form);
 
-  const showModal = (brand: any = null) => {
+  const showModal = (brand: BrandRecord | null = null) => {
     setEditingBrand(brand);
     if (brand) {
       form.setFieldsValue({
@@ -37,21 +52,13 @@ export default function Brand() {
     setIsModalOpen(true);
   };
 
-  useEffect(() => {
-    if (searchParams.get("create") !== "1") return
-    showModal()
-    const next = new URLSearchParams(searchParams)
-    next.delete("create")
-    setSearchParams(next, { replace: true })
-  }, [searchParams, setSearchParams])
-
   const handleCancel = () => {
     setIsModalOpen(false);
     setEditingBrand(null);
     form.resetFields();
   };
 
-  const handleFinish = (values: any) => {
+  const handleFinish = (values: BrandPayload) => {
     const payload = {
       name: values.name,
       slug: values.slug,
@@ -96,7 +103,7 @@ export default function Brand() {
       title: 'Nomi',
       dataIndex: 'name',
       key: 'name',
-      render: (text: string, record: any) => (
+      render: (text: string, record: BrandRecord) => (
         <div className="flex flex-col">
           <span className="text-sm font-semibold text-gray-800 dark:text-white">{text}</span>
           <span className="text-xs font-mono text-gray-400 dark:text-slate-400">/{record.slug}</span>
@@ -152,7 +159,7 @@ export default function Brand() {
       title: 'Amallar',
       key: 'actions',
       width: 110,
-      render: (_: unknown, record: any) => (
+      render: (_: unknown, record: BrandRecord) => (
         <div className="flex items-center gap-2">
           <Tooltip title="Tahrirlash">
             <Button

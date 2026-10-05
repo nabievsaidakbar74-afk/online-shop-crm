@@ -3,7 +3,7 @@ import { NavLink, useLocation, useNavigate } from "react-router-dom"
 import LOGO from "../../assets/svg/DealPort.svg"
 import MARK from "../../assets/svg/DealPortMark.svg"
 import UserImg from "../../assets/svg/userImage.png"
-import { useUser } from "../../features/auth/contexts/UserContext"
+import { useUser } from "../../features/auth/user"
 
 const links = [
     { to: "/dashboard", icon: "bi-house-door-fill", label: "Dashboard" },
@@ -24,7 +24,7 @@ type SidebarProps = {
 }
 
 export default function Sidebar({ expanded, setExpanded, mobileOpen, onNavigate }: SidebarProps) {
-    const { user }: any = useUser()
+    const { user } = useUser()
     const navigate = useNavigate()
     const { pathname } = useLocation()
     const showLabels = expanded || mobileOpen

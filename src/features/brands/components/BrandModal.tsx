@@ -1,13 +1,21 @@
 import { Button, Form, Input, Modal, Switch } from 'antd'
 import type { FormInstance } from 'antd'
 
+type BrandFormValues = {
+    name: string
+    slug: string
+    description?: string
+    logo?: string
+    isActive?: boolean
+}
+
 type BrandModalProps = {
     isModalOpen: boolean
     handleCancel: () => void
-    editingBrand: any
+    editingBrand: { id?: string } | null
     form: FormInstance
     logo?: string
-    handleFinish: (values: any) => void
+    handleFinish: (values: BrandFormValues) => void
     isPending?: boolean
 }
 

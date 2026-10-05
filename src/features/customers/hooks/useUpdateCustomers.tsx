@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import api from "../../../services/api"
 import { message } from "antd"
+import { apiErrorMessage } from "../../../services/apiError"
 
 type UpdateStatusPayload = {
     id: string
@@ -18,8 +19,8 @@ const useUpdateCustomers = () => {
             message.success("customer status updated")
             query.invalidateQueries({ queryKey: ["customers"] })
         },
-        onError: (err: any) => {
-            message.error(err?.response?.data?.message ?? "Bannerni tahrirlashda xatolik")
+        onError: (err: unknown) => {
+            message.error(apiErrorMessage(err, "Bannerni tahrirlashda xatolik"))
         },
     })
     return { data, isPending, mutate }

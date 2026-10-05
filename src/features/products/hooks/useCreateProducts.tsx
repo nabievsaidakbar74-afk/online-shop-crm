@@ -8,7 +8,7 @@ const useCreateProducts = () => {
     const query = useQueryClient()
     const { data, isPending, mutate } = useMutation({
         mutationKey: ["create-product"],
-        mutationFn: (data) => api.post(`/admin/products`, data),
+        mutationFn: (data: object) => api.post(`/admin/products`, data),
         onSuccess: () => {
             message.success("create product")
             query.invalidateQueries({ queryKey: ["products"] })

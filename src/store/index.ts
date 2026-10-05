@@ -22,4 +22,6 @@ const store = configureStore({
         theme: reducerTheme.reducer
     }
 })
+export type RootState = ReturnType<typeof store.getState>
+
 export default store

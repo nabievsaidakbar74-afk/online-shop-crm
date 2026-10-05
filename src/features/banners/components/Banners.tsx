@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react"
-import { useSearchParams } from "react-router-dom"
+import { useState } from "react"
+import { useLocation } from "react-router-dom"
 import { Button, Drawer, Form, Image, message, Popconfirm, Spin, Tag, Tooltip } from "antd"
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons"
 import dayjs from "dayjs"
@@ -42,25 +42,51 @@ function InfoRow({ label, value, mono }: { label: string; value?: string | numbe
     )
 }
 
+type BannerRecord = {
+    id: string
+    title: string
+    subtitle?: string
+    image?: string
+    mobileImage?: string
+    buttonText?: string
+    link?: string
+    sortOrder?: number
+    isActive?: boolean
+    startDate?: string
+    endDate?: string
+    createdAt?: string
+    updatedAt?: string
+    deletedAt?: string | null
+}
+
 export default function Banners() {
 
     const { data, isLoading } = useBanners()
-    const banners = Array.isArray(data?.data) ? data.data : []
+    const banners: BannerRecord[] = Array.isArray(data?.data) ? data.data : []
 
     const { isPending, mutate } = useCreateBanners()
     const { isPending: isUpdating, mutate: updateBanner } = useUpdateBanners()
     const { mutate: deleteBanners } = useDeleteBanners()
 
+    const location = useLocation()
+    const createToken = typeof (location.state as { create?: unknown } | null)?.create === "number"
+        ? (location.state as { create: number }).create
+        : null
     const [isModalOpen, setIsModalOpen] = useState(false)
-    const [editingBanner, setEditingBanner] = useState<any>(null)
-    const [detailBanner, setDetailBanner] = useState<any>(null)
+    const [editingBanner, setEditingBanner] = useState<BannerRecord | null>(null)
+    const [detailBanner, setDetailBanner] = useState<BannerRecord | null>(null)
     const [form] = Form.useForm()
-    const [searchParams, setSearchParams] = useSearchParams()
+    const [seenCreate, setSeenCreate] = useState<number | null>(null)
+    if (createToken !== null && createToken !== seenCreate) {
+        setSeenCreate(createToken)
+        setEditingBanner(null)
+        setIsModalOpen(true)
+    }
 
     const image = Form.useWatch("image", form)
     const mobileImage = Form.useWatch("mobileImage", form)
 
-    const showModal = (banner: any = null) => {
+    const showModal = (banner: BannerRecord | null = null) => {
         setEditingBanner(banner)
         if (banner) {
             form.setFieldsValue({
@@ -81,29 +107,35 @@ export default function Banners() {
         setIsModalOpen(true)
     }
 
-    useEffect(() => {
-        if (searchParams.get("create") !== "1") return
-        showModal()
-        const next = new URLSearchParams(searchParams)
-        next.delete("create")
-        setSearchParams(next, { replace: true })
-    }, [searchParams, setSearchParams])
-
     const handleCancel = () => {
         setIsModalOpen(false)
         setEditingBanner(null)
         form.resetFields()
     }
 
-    const handleFinish = (values: any) => {
-        const toIso = (value: any) => {
+    const handleFinish = (values: {
+        title: string
+        subtitle?: string
+        image?: string
+        mobileImage?: string
+        buttonText?: string
+        link?: string
+        sortOrder?: number
+        isActive?: boolean
+        startDate?: unknown
+        endDate?: unknown
+    }) => {
+        const toIso = (value: unknown) => {
             if (!value) return undefined
-            if (typeof value?.toISOString === "function") {
+            if (typeof value === "object" && value !== null && "toISOString" in value && typeof value.toISOString === "function") {
                 const iso = value.toISOString()
                 if (typeof iso === "string") return iso
             }
-            const date = new Date(value)
-            return Number.isNaN(date.getTime()) ? undefined : date.toISOString()
+            if (typeof value === "string" || typeof value === "number" || value instanceof Date) {
+                const date = new Date(value)
+                return Number.isNaN(date.getTime()) ? undefined : date.toISOString()
+            }
+            return undefined
         }
 
         const startDate = toIso(values.startDate)
@@ -133,7 +165,7 @@ export default function Banners() {
             setEditingBanner(null)
             form.resetFields()
             if (editedId) {
-                setDetailBanner((prev: any) =>
+                setDetailBanner((prev) =>
                     prev?.id === editedId ? { ...prev, ...payload } : prev
                 )
             }
@@ -185,7 +217,7 @@ export default function Banners() {
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-                                {banners.map((banner: any) => {
+                                {banners.map((banner) => {
                                     const schedule = scheduleLabel(banner.startDate, banner.endDate)
                                     return (
                                         <article
@@ -331,7 +363,9 @@ export default function Banners() {
                         <Popconfirm
                             title="Bannerni o'chirish"
                             description="Rostdan ham ushbu bannerni o'chirmoqchimisiz?"
-                            onConfirm={() => handleDelete(detailBanner?.id)}
+                            onConfirm={() => {
+                                if (detailBanner?.id) handleDelete(detailBanner.id)
+                            }}
                             okText="Ha"
                             cancelText="Yo'q"
                             okButtonProps={{ danger: true }}

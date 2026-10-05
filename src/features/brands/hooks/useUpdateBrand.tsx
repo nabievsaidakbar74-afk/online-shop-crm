@@ -1,6 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../../../services/api";
 import { message } from "antd";
+import { apiErrorMessage } from "../../../services/apiError";
+import type { BrandPayload } from "./useCreateBrand";
 
 const useUpdateBrand = () => {
 
@@ -8,13 +10,13 @@ const useUpdateBrand = () => {
 
     const { data, isPending, mutate } = useMutation({
         mutationKey: ["update-brands"],
-        mutationFn: ({ id, ...body }: any) => api.patch(`/admin/brands/${id}`, body),
+        mutationFn: ({ id, ...body }: BrandPayload & { id: string }) => api.patch(`/admin/brands/${id}`, body),
         onSuccess: () => {
             message.success("Brend tahrirlandi")
             query.invalidateQueries({ queryKey: ["brands"] })
         },
-        onError: (err: any) => {
-            message.error(err?.response?.data?.message ?? "Brendni tahrirlashda xatolik")
+        onError: (err: unknown) => {
+            message.error(apiErrorMessage(err, "Brendni tahrirlashda xatolik"))
         }
     })
     return { data, isPending, mutate }

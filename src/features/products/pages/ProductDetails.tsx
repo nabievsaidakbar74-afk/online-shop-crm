@@ -74,10 +74,18 @@ export default function ProductDetails() {
 
     const images = useMemo(() => {
         const list = [...(product?.images ?? [])]
-        return list.sort((a: any, b: any) => Number(b.isMain) - Number(a.isMain) || a.sortOrder - b.sortOrder)
+        return list.sort((a, b) => Number(b.isMain) - Number(a.isMain) || a.sortOrder - b.sortOrder)
     }, [product])
 
-    const variants = product?.variants ?? []
+    const variants: Array<{
+        id?: string
+        sku?: string
+        isActive?: boolean
+        price?: number
+        stock?: number
+        availableStock?: number
+        attributes?: Record<string, unknown>
+    }> = product?.variants ?? []
 
     const formatPrice = (value?: number) =>
         typeof value === "number" ? `${value.toLocaleString("uz-UZ")} UZS` : "—"
@@ -249,7 +257,7 @@ export default function ProductDetails() {
 
                             {images.length > 1 && (
                                 <div className="mt-4 flex flex-wrap gap-3">
-                                    {images.map((img: any, index: number) => (
+                                    {images.map((img, index: number) => (
                                         <button
                                             key={img.id}
                                             onClick={() => setActiveImage(index)}
@@ -297,7 +305,7 @@ export default function ProductDetails() {
 
                             {variants.length ? (
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                    {variants.map((variant: any) => (
+                                    {variants.map((variant) => (
                                         <div
                                             key={variant.id}
                                             className="rounded-2xl border border-gray-100 bg-gray-50/70 p-4 dark:border-slate-700/60 dark:bg-slate-900/40"

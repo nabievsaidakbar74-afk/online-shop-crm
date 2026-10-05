@@ -1,14 +1,27 @@
 import { Button, DatePicker, Form, Input, InputNumber, Modal, Switch } from "antd"
 import type { FormInstance } from "antd"
 
+type BannerFormValues = {
+    title: string
+    subtitle?: string
+    image?: string
+    mobileImage?: string
+    buttonText?: string
+    link?: string
+    sortOrder?: number
+    isActive?: boolean
+    startDate?: unknown
+    endDate?: unknown
+}
+
 type BannerModalProps = {
     isModalOpen: boolean
     handleCancel: () => void
-    editingBanner: any
+    editingBanner: { id?: string } | null
     form: FormInstance
     image?: string
     mobileImage?: string
-    handleFinish: (values: any) => void
+    handleFinish: (values: BannerFormValues) => void
     isPending?: boolean
 }
 

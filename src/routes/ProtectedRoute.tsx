@@ -1,7 +1,7 @@
 import Main from "../components/layouts/Main";
 import useMe from "../features/profile/hooks/usMe";
 import Spinner from "../components/layouts/Spinner";
-import { useUser } from "../features/auth/contexts/UserContext";
+import { useUser } from "../features/auth/user";
 import { useEffect } from "react";
 
 export default function ProtectedRoute() {

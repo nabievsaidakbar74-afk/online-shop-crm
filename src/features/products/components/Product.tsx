@@ -2,8 +2,8 @@ import { Table, Tag, Image, Space, Button, Tooltip, Popconfirm } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import useProducts from '../hooks/useProducts'
-import { useEffect, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import ProductDrawer from './ProductDrawer'
 import useDeleteProducts from '../hooks/useDeleteProducts'
 
@@ -46,7 +46,7 @@ interface ProductType {
     alt: string
     isMain: boolean
   }>
-  variants: Array<any>
+  variants: unknown[]
   averageRating: number
   reviewsCount: number
 }
@@ -54,17 +54,17 @@ interface ProductType {
 export default function Product() {
 
 const navigate = useNavigate()
-  const [searchParams, setSearchParams] = useSearchParams()
+  const location = useLocation()
+  const createToken = typeof (location.state as { create?: unknown } | null)?.create === "number"
+    ? (location.state as { create: number }).create
+    : null
 
   const [open, setOpen] = useState(false)
-
-  useEffect(() => {
-    if (searchParams.get("create") !== "1") return
+  const [seenCreate, setSeenCreate] = useState<number | null>(null)
+  if (createToken !== null && createToken !== seenCreate) {
+    setSeenCreate(createToken)
     setOpen(true)
-    const next = new URLSearchParams(searchParams)
-    next.delete("create")
-    setSearchParams(next, { replace: true })
-  }, [searchParams, setSearchParams])
+  }
   const { mutate } = useDeleteProducts()
 
 

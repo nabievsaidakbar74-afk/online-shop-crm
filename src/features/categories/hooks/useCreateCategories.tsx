@@ -8,7 +8,7 @@ const useCreateCategories = () => {
 
     const { data, isPending, mutate } = useMutation({
         mutationKey: ["create-categories"],
-        mutationFn: (data) => api.post(`/admin/categories`, data),
+        mutationFn: (data: object) => api.post(`/admin/categories`, data),
         onSuccess: () => {
             message.success("create categorie")
             query.invalidateQueries({ queryKey: ["categories"] })

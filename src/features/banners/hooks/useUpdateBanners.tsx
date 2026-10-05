@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import api from "../../../services/api"
 import { message } from "antd"
+import { apiErrorMessage } from "../../../services/apiError"
 
 const useUpdateBanners = () => {
     const query = useQueryClient()
@@ -13,8 +14,8 @@ const useUpdateBanners = () => {
             message.success("Banner tahrirlandi")
             query.invalidateQueries({ queryKey: ["banners"] })
         },
-        onError: (err: any) => {
-            message.error(err?.response?.data?.message ?? "Bannerni tahrirlashda xatolik")
+        onError: (err: unknown) => {
+            message.error(apiErrorMessage(err, "Bannerni tahrirlashda xatolik"))
         },
     })
     return { data, isPending, mutate }

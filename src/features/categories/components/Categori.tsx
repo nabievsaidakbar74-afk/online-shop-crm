@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import useCategories from "../hooks/useCategories"
 import useDeleteCategory from "../hooks/useDeleteCategory"
 import { Button, Popconfirm, Space, Table } from "antd"
 import { useSelector } from "react-redux"
 import CategoryModal from "./CategoryModal"
 import type { CategoryType } from "../types/categories"
-import { useNavigate, useSearchParams } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 
 function CategoryThumb({ src, className }: { src?: string | null; className: string }) {
   if (!src) {
@@ -34,16 +34,16 @@ export default function Categori() {
   const { mutate, isPending, variables } = useDeleteCategory()
   const [activeTab, setActiveTab] = useState<"all" | "active" | "hidden">("all")
   const [search, setSearch] = useState("")
+  const location = useLocation()
+  const createToken = typeof (location.state as { create?: unknown } | null)?.create === "number"
+    ? (location.state as { create: number }).create
+    : null
   const [open, setOpen] = useState(false)
-  const [searchParams, setSearchParams] = useSearchParams()
-
-  useEffect(() => {
-    if (searchParams.get("create") !== "1") return
+  const [seenCreate, setSeenCreate] = useState<number | null>(null)
+  if (createToken !== null && createToken !== seenCreate) {
+    setSeenCreate(createToken)
     setOpen(true)
-    const next = new URLSearchParams(searchParams)
-    next.delete("create")
-    setSearchParams(next, { replace: true })
-  }, [searchParams, setSearchParams])
+  }
   const isDark = useSelector((state: { theme: { isDark: boolean } }) => state.theme.isDark)
 
   const categories: CategoryType[] = data?.data ?? []

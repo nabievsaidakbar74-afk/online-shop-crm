@@ -63,7 +63,14 @@ export default function CategoriesDetail() {
     }
 
 
-    const handleFinish = (values: any) => {
+    const handleFinish = (values: {
+        name?: string
+        slug?: string
+        description?: string
+        image?: string
+        sortOrder?: number
+        isActive?: boolean
+    }) => {
         if (!id) return
         updateCategory({ values, id })
     }

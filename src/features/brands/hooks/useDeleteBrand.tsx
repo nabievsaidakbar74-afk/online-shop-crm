@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import api from "../../../services/api"
 import { message } from "antd"
+import { apiErrorMessage } from "../../../services/apiError"
 
 const useDeleteBrand = () => {
 
@@ -13,8 +14,8 @@ const useDeleteBrand = () => {
             message.success("Brend o'chirildi")
             query.invalidateQueries({ queryKey: ["brands"] })
         },
-        onError: (err: any) => {
-            message.error(err?.response?.data?.message ?? "Brendni o'chirishda xatolik")
+        onError: (err: unknown) => {
+            message.error(apiErrorMessage(err, "Brendni o'chirishda xatolik"))
         }
     })
     return { mutate, isPending, deletingId: variables }

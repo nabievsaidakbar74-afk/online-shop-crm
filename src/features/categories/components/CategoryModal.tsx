@@ -1,5 +1,6 @@
 import { Button, Form, Input, InputNumber, Modal, Switch } from "antd"
 import { useSelector } from "react-redux"
+import type { RootState } from "../../../store"
 import useCreateCategories from "../hooks/useCreateCategories"
 
 type Props = {
@@ -10,7 +11,7 @@ type Props = {
 export default function CategoryModal({ open, setOpen }: Props) {
   const { isPending, mutate } = useCreateCategories()
   const [form] = Form.useForm()
-  const isDark = useSelector((state: any) => state.theme.isDark)
+  const isDark = useSelector((state: RootState) => state.theme.isDark)
 
   const image = Form.useWatch("image", form)
 
@@ -19,7 +20,15 @@ export default function CategoryModal({ open, setOpen }: Props) {
     form.resetFields() 
   }
 
-  const handleFinish = (values: any) => {
+  const handleFinish = (values: {
+    name: string
+    slug?: string
+    description?: string
+    image?: string
+    parentId?: string | null
+    isActive?: boolean
+    sortOrder?: number
+  }) => {
     mutate(values, {
       onSuccess: () => {
         setOpen(false)

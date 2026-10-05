@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, type ComponentType } from 'react'
 import { useParams } from 'react-router-dom';
 import useOrderDetail from '../hooks/useOrderDetail';
 import useOrderNotesDetail from '../hooks/useOrderNotesUpdate';
 
-export default function OrderNotesUpdate({ SectionTitle }: { SectionTitle: any }) {
+type SectionTitleProps = { icon: string; title: string; subtitle?: string }
+
+export default function OrderNotesUpdate({ SectionTitle }: { SectionTitle: ComponentType<SectionTitleProps> }) {
 
     const { id } = useParams<{ id: string }>();
 
@@ -12,16 +14,7 @@ export default function OrderNotesUpdate({ SectionTitle }: { SectionTitle: any }
     const [isEditing, setIsEditing] = useState(false);
 
     const currentNote = data?.data?.data?.notes;
-
-    // Boshlang'ich qiymat sifatida bo'sh string beramiz
     const [notes, setNotes] = useState("");
-
-    // currentNote o'zgarganda (API'dan data kelganda) state'ni update qilamiz
-    useEffect(() => {
-        if (currentNote !== undefined && currentNote !== null) {
-            setNotes(currentNote);
-        }
-    }, [currentNote]);
 
 
     // Saqlash tugmasi uchun handler funksiya
