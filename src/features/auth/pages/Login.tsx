@@ -11,7 +11,7 @@ type LoginValues = {
 }
 
 export default function Login() {
-  const isDark = useSelector((state) => state.theme.isDark)
+  const isDark = useSelector((state: { theme: { isDark: boolean } }) => state.theme.isDark)
   const { isPending, mutate } = useLogin()
   const [form] = Form.useForm<LoginValues>()
 
@@ -32,7 +32,7 @@ export default function Login() {
       theme={{
         algorithm: isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
         token: {
-          colorPrimary: "#4EA674",
+          colorPrimary: "#2E9A62",
           borderRadius: 10,
           fontFamily: "inherit",
           colorTextLightSolid: "#ffffff",
@@ -48,13 +48,13 @@ export default function Login() {
             activeBg: isDark ? "#334155" : "#ffffff",
             colorText: isDark ? "#f8fafc" : "#111827",
             colorBorder: isDark ? "#475569" : "#e5e7eb",
-            hoverBorderColor: isDark ? "#64748b" : "#4EA674",
+            hoverBorderColor: isDark ? "#64748b" : "#2E9A62",
             colorTextPlaceholder: isDark ? "#94a3b8" : "#9ca3af",
           },
           Button: {
-            colorPrimary: "#4EA674",
-            colorPrimaryHover: "#5bb882",
-            colorPrimaryActive: "#3d8b5f",
+            colorPrimary: "#2E9A62",
+            colorPrimaryHover: "#21764A",
+            colorPrimaryActive: "#1B6840",
             primaryColor: "#ffffff",
             colorTextLightSolid: "#ffffff",
           },
@@ -65,8 +65,9 @@ export default function Login() {
         },
       }}
     >
-      <div className={`min-h-screen w-full flex items-center justify-center p-4 ${isDark ? "bg-slate-900" : "bg-[#F3F4F6]"}`}>
-        <div className={`w-full max-w-[420px] rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] p-8 ${isDark ? "bg-slate-800" : "bg-white"}`}>
+      <div className={`relative min-h-dvh w-full flex items-center justify-center p-4 ${isDark ? "bg-[#0E141C]" : "bg-canvas"}`}>
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(46,154,98,0.14),transparent_55%)]" />
+        <div className={`relative w-full max-w-[420px] rounded-2xl border p-8 shadow-[0_12px_40px_rgba(16,24,20,0.06)] ${isDark ? "border-white/10 bg-[#16202C]" : "border-line bg-white"}`}>
           <div className="flex flex-col items-center gap-2 mb-8">
             <img src={LOGO} alt="DealPort" className="h-9" />
             <Typography.Title

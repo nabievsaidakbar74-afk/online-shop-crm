@@ -1,4 +1,5 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useSearchParams } from "react-router-dom"
 import { Button, Drawer, Form, Image, message, Popconfirm, Spin, Tag, Tooltip } from "antd"
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons"
 import dayjs from "dayjs"
@@ -48,12 +49,13 @@ export default function Banners() {
 
     const { isPending, mutate } = useCreateBanners()
     const { isPending: isUpdating, mutate: updateBanner } = useUpdateBanners()
-    const { mutate: deleteBanners, isPending: deletePending, variables } = useDeleteBanners()
+    const { mutate: deleteBanners } = useDeleteBanners()
 
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [editingBanner, setEditingBanner] = useState<any>(null)
     const [detailBanner, setDetailBanner] = useState<any>(null)
     const [form] = Form.useForm()
+    const [searchParams, setSearchParams] = useSearchParams()
 
     const image = Form.useWatch("image", form)
     const mobileImage = Form.useWatch("mobileImage", form)
@@ -78,6 +80,14 @@ export default function Banners() {
         }
         setIsModalOpen(true)
     }
+
+    useEffect(() => {
+        if (searchParams.get("create") !== "1") return
+        showModal()
+        const next = new URLSearchParams(searchParams)
+        next.delete("create")
+        setSearchParams(next, { replace: true })
+    }, [searchParams, setSearchParams])
 
     const handleCancel = () => {
         setIsModalOpen(false)
@@ -145,11 +155,11 @@ export default function Banners() {
         <>
             {
                 isLoading
-                    ? <div className="w-full h-screen flex items-center justify-center"><Spin size="large"></Spin></div>
-                    : <div className="p-5 space-y-5 overflow-y-auto h-[calc(100vh-6rem)] bg-[#F3F4F6] dark:bg-slate-900">
+                    ? <div className="page-shell grid place-items-center"><Spin size="large"></Spin></div>
+                    : <div className="page-shell space-y-5">
                         <div className="flex flex-wrap items-center justify-between gap-3">
                             <div className="flex items-center gap-3">
-                                <span className="w-11 h-11 shrink-0 rounded-2xl bg-[#4EA674]/10 text-[#4EA674] flex items-center justify-center text-lg">
+                                <span className="w-11 h-11 shrink-0 rounded-2xl bg-[#2E9A62]/10 text-[#2E9A62] flex items-center justify-center text-lg">
                                     <i className="bi bi-card-image" />
                                 </span>
                                 <div>
@@ -162,25 +172,25 @@ export default function Banners() {
                             <button
                                 type="button"
                                 onClick={() => showModal()}
-                                className="inline-flex items-center gap-2 rounded-full bg-[#4EA674] px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#3d8b5f]"
+                                className="btn-primary"
                             >
                                 <i className="bi bi-plus-lg" /> Add Banner
                             </button>
                         </div>
 
                         {banners.length === 0 ? (
-                            <div className="rounded-2xl border border-dashed border-gray-200 bg-white p-12 text-center dark:border-slate-700 dark:bg-slate-800">
+                            <div className="empty-state surface border-dashed">
                                 <i className="bi bi-card-image text-3xl text-gray-300" />
                                 <p className="mt-2 text-sm font-medium text-gray-500 dark:text-slate-400">Bannerlar yo'q</p>
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-                                {banners.map((banner) => {
+                                {banners.map((banner: any) => {
                                     const schedule = scheduleLabel(banner.startDate, banner.endDate)
                                     return (
                                         <article
                                             key={banner.id}
-                                            className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)] dark:border-slate-700/60 dark:bg-slate-800 dark:shadow-none"
+                                            className="surface overflow-hidden transition-transform duration-200 hover:-translate-y-0.5"
                                         >
                                             <div className="relative h-44 bg-gray-100 dark:bg-slate-900 overflow-hidden">
                                                 <img
@@ -212,7 +222,7 @@ export default function Banners() {
                                                             {banner.subtitle}
                                                         </p>
                                                     </div>
-                                                    <span className="shrink-0 rounded-full bg-[#4EA674]/10 px-3 py-1 text-xs font-medium text-[#4EA674]">
+                                                    <span className="shrink-0 rounded-full bg-[#2E9A62]/10 px-3 py-1 text-xs font-medium text-[#2E9A62]">
                                                         {banner.buttonText}
                                                     </span>
                                                 </div>
@@ -249,7 +259,7 @@ export default function Banners() {
                                                                 shape="circle"
                                                                 icon={<EyeOutlined />}
                                                                 onClick={() => setDetailBanner(banner)}
-                                                                className="text-gray-500! hover:text-[#4EA674]! dark:text-slate-300!"
+                                                                className="text-gray-500! hover:text-[#2E9A62]! dark:text-slate-300!"
                                                             />
                                                         </Tooltip>
                                                         <Tooltip title="Tahrirlash">
@@ -258,7 +268,7 @@ export default function Banners() {
                                                                 shape="circle"
                                                                 icon={<EditOutlined />}
                                                                 onClick={() => showModal(banner)}
-                                                                className="text-gray-500! hover:text-[#4EA674]! dark:text-slate-300!"
+                                                                className="text-gray-500! hover:text-[#2E9A62]! dark:text-slate-300!"
                                                             />
                                                         </Tooltip>
                                                         <Popconfirm
@@ -301,7 +311,7 @@ export default function Banners() {
                 width={560}
                 title={
                     <div className="flex items-center gap-3">
-                        <span className="w-9 h-9 rounded-xl bg-[#4EA674]/10 text-[#4EA674] flex items-center justify-center">
+                        <span className="w-9 h-9 rounded-xl bg-[#2E9A62]/10 text-[#2E9A62] flex items-center justify-center">
                             <i className="bi bi-card-image" />
                         </span>
                         <div>
@@ -361,7 +371,7 @@ export default function Banners() {
                             <Tag color={scheduleLabel(detailBanner.startDate, detailBanner.endDate).color} className="rounded-full border-none">
                                 {scheduleLabel(detailBanner.startDate, detailBanner.endDate).text}
                             </Tag>
-                            <span className="rounded-full bg-[#4EA674]/10 px-3 py-1 text-xs font-medium text-[#4EA674]">
+                            <span className="rounded-full bg-[#2E9A62]/10 px-3 py-1 text-xs font-medium text-[#2E9A62]">
                                 {detailBanner.buttonText}
                             </span>
                         </div>

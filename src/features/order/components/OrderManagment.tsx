@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import useOrder from "../hooks/useOrder"
+import { useNavigate } from "react-router-dom"
 
 const stats = [
   { title: "Total Orders", value: "1,240", change: "+14.4%", up: true },
@@ -53,13 +54,13 @@ function formatDate(value?: string | null) {
   return new Date(value).toLocaleDateString("en-GB").replaceAll("/", "-")
 }
 
-function statusColor(status: string) {
+function statusBadge(status: string) {
   const key = status?.toUpperCase()
-  if (key === "DELIVERED" || key === "COMPLETED") return "text-[#21C45D]"
-  if (key === "PENDING") return "text-amber-500"
-  if (key === "SHIPPED" || key === "PROCESSING" || key === "CONFIRMED") return "text-gray-500 dark:text-gray-400"
-  if (key === "CANCELLED" || key === "CANCELED") return "text-red-400"
-  return "text-gray-500"
+  if (key === "DELIVERED" || key === "COMPLETED") return "badge badge-success"
+  if (key === "PENDING") return "badge badge-warning"
+  if (key === "SHIPPED" || key === "PROCESSING" || key === "CONFIRMED") return "badge badge-info"
+  if (key === "CANCELLED" || key === "CANCELED") return "badge badge-danger"
+  return "badge badge-neutral"
 }
 
 function statusIcon(status: string) {
@@ -78,6 +79,8 @@ function pageNumbers(current: number, total: number) {
 }
 
 export default function OrderManagment() {
+  const navigate = useNavigate()
+
   const [activeTab, setActiveTab] = useState<(typeof tabs)[number]["key"]>("all")
   const [page, setPage] = useState(1)
   const [searchInput, setSearchInput] = useState("")
@@ -101,7 +104,6 @@ export default function OrderManagment() {
     status: selectedTab.status,
     search: search || undefined,
   })
-
   const orders: OrderRow[] = Array.isArray(data?.data) ? data.data : []
   const meta = data?.meta
   const totalPages = meta?.totalPages ?? 1
@@ -109,14 +111,17 @@ export default function OrderManagment() {
   const pages = pageNumbers(currentPage, totalPages)
 
   return (
-    <div className="p-5 space-y-4 bg-[#F3F4F6] dark:bg-slate-900 overflow-y-auto h-[calc(100vh-6rem)] ">
+    <div className="page-shell space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-xl font-semibold text-gray-900 dark:text-white">Order List</h1>
+        <div>
+          <h2 className="text-lg font-bold tracking-[-0.03em] text-ink">Order List</h2>
+          <p className="text-xs text-faint">So'nggi buyurtmalar va holatlar</p>
+        </div>
         <div className="flex items-center gap-3">
-          <button className="inline-flex items-center gap-2 rounded-full bg-[#4EA674] text-white text-sm px-4 py-2 hover:bg-[#3d8b5f] transition-colors">
+          <button type="button" className="btn-primary">
             <i className="bi bi-plus-lg"></i> Add Order
           </button>
-          <button className="text-sm text-gray-500 dark:text-gray-300 hover:text-[#4EA674] transition-colors">
+          <button type="button" className="text-sm font-semibold text-muted transition-colors hover:text-brand">
             More Action
           </button>
         </div>
@@ -124,23 +129,23 @@ export default function OrderManagment() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         {stats.map((s) => (
-          <div key={s.title} className="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-            <div className="flex justify-between items-start">
-              <p className="text-sm text-gray-500 dark:text-gray-400">{s.title}</p>
-              <i className="bi bi-three-dots-vertical text-gray-400 cursor-pointer"></i>
+          <div key={s.title} className="surface p-5">
+            <div className="flex items-start justify-between">
+              <p className="text-sm font-medium text-muted">{s.title}</p>
+              <i className="bi bi-three-dots-vertical cursor-pointer text-faint"></i>
             </div>
-            <div className="flex items-end gap-2 mt-3">
-              <p className="text-[28px] leading-none font-semibold text-gray-900 dark:text-white">{s.value}</p>
-              <span className={`text-sm mb-0.5 ${s.up ? "text-[#21C45D]" : "text-red-400"}`}>
+            <div className="mt-3 flex items-end gap-2">
+              <p className="text-[28px] font-bold leading-none tracking-[-0.04em] text-ink">{s.value}</p>
+              <span className={`mb-0.5 text-sm font-semibold ${s.up ? "text-brand" : "text-red-400"}`}>
                 <i className={`bi ${s.up ? "bi-arrow-up" : "bi-arrow-down"}`}></i> {s.change}
               </span>
             </div>
-            <p className="text-xs text-gray-400 mt-2">Last 7 days</p>
+            <p className="mt-2 text-xs text-faint">Last 7 days</p>
           </div>
         ))}
       </div>
 
-      <div className="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <div className="surface p-4 sm:p-5">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
           <div className="flex flex-wrap items-center gap-4 text-sm">
             {tabs.map((tab) => {
@@ -152,11 +157,10 @@ export default function OrderManagment() {
                     setActiveTab(tab.key)
                     setPage(1)
                   }}
-                  className={`pb-1 border-b-2 transition-colors ${
-                    activeTab === tab.key
-                      ? "border-[#4EA674] text-gray-900 dark:text-white font-medium"
-                      : "border-transparent text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                  }`}
+                  className={`border-b-2 pb-2 text-sm font-semibold transition-colors ${activeTab === tab.key
+                    ? "border-brand text-ink"
+                    : "border-transparent text-faint hover:text-muted"
+                    }`}
                 >
                   {tab.label}{count}
                 </button>
@@ -164,56 +168,63 @@ export default function OrderManagment() {
             })}
           </div>
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-2 rounded-full border border-gray-200 dark:border-slate-600 px-3 py-1.5">
+            <label className="search-field w-full sm:w-56">
+              <i className="bi bi-search text-sm text-faint"></i>
               <input
                 type="text"
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 placeholder="Search order report"
-                className="bg-transparent outline-none text-sm text-gray-700 dark:text-white placeholder-gray-400 w-40"
               />
-              <i className="bi bi-search text-gray-400 text-sm"></i>
-            </div>
-            <button className="w-9 h-9 rounded-full border border-gray-200 dark:border-slate-600 text-gray-400 hover:text-[#4EA674]">
+            </label>
+            <button type="button" className="icon-btn border border-line">
               <i className="bi bi-funnel"></i>
             </button>
-            <button className="w-9 h-9 rounded-full border border-gray-200 dark:border-slate-600 text-gray-400 hover:text-[#4EA674]">
+            <button type="button" className="icon-btn border border-line">
               <i className="bi bi-arrow-left-right"></i>
             </button>
-            <button className="w-9 h-9 rounded-full border border-gray-200 dark:border-slate-600 text-gray-400">
+            <button type="button" className="icon-btn border border-line">
               <i className="bi bi-three-dots"></i>
             </button>
           </div>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-sm min-w-200">
+          <table className="data-table min-w-[760px]">
             <thead>
-              <tr className="text-left text-gray-400 bg-[#F6FBF8] dark:bg-slate-700/50">
-                <th className="font-normal p-3 w-10">
-                  <input type="checkbox" className="accent-[#4EA674]" />
+              <tr>
+                <th className="w-10">
+                  <input type="checkbox" className="accent-brand" />
                 </th>
-                <th className="font-normal p-3">No.</th>
-                <th className="font-normal p-3">Order Id</th>
-                <th className="font-normal p-3">Product</th>
-                <th className="font-normal p-3">Date</th>
-                <th className="font-normal p-3">Price</th>
-                <th className="font-normal p-3">Payment</th>
-                <th className="font-normal p-3">Status</th>
+                <th>No.</th>
+                <th>Order Id</th>
+                <th>Product</th>
+                <th>Date</th>
+                <th>Price</th>
+                <th>Payment</th>
+                <th>Status</th>
               </tr>
             </thead>
             <tbody className={isFetching ? "opacity-60" : ""}>
               {isLoading && orders.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="p-8 text-center text-gray-400">
-                    Loading orders...
+                  <td colSpan={8}>
+                    <div className="space-y-2 py-2">
+                      {[0, 1, 2, 3].map((item) => (
+                        <div key={item} className="skeleton h-10" />
+                      ))}
+                    </div>
                   </td>
                 </tr>
               )}
               {!isLoading && orders.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="p-8 text-center text-gray-400">
-                    No orders found
+                  <td colSpan={8}>
+                    <div className="empty-state">
+                      <i className="bi bi-cart" />
+                      <p className="text-sm font-semibold text-ink">No orders found</p>
+                      <p className="text-xs text-faint">Filtr yoki qidiruvni o'zgartirib ko'ring</p>
+                    </div>
                   </td>
                 </tr>
               )}
@@ -223,45 +234,45 @@ export default function OrderManagment() {
                 const paid = row.paymentStatus?.toUpperCase() === "PAID"
 
                 return (
-                  <tr key={row.id} className="border-b border-gray-50 dark:border-slate-700/60">
-                    <td className="p-3">
-                      <input type="checkbox" className="accent-[#4EA674]" />
+                  <tr key={row.id} className="cursor-pointer" onClick={() => navigate(row.id)}>
+                    <td>
+                      <input type="checkbox" className="accent-brand" onClick={(event) => event.stopPropagation()} />
                     </td>
-                    <td className="p-3 text-gray-500 dark:text-gray-400">
+                    <td>
                       {(currentPage - 1) * PAGE_SIZE + i + 1}
                     </td>
-                    <td className="p-3 text-gray-700 dark:text-gray-200">{row.orderNumber}</td>
-                    <td className="p-3">
-                      <div className="flex items-center gap-2 text-gray-800 dark:text-gray-100">
+                    <td className="font-semibold text-ink">{row.orderNumber}</td>
+                    <td>
+                      <div className="flex items-center gap-2 text-ink">
                         {firstItem?.productImage ? (
                           <img
                             src={firstItem.productImage}
                             alt={firstItem.productName}
-                            className="w-8 h-8 rounded-md object-cover bg-gray-100 dark:bg-slate-700"
+                            className="h-9 w-9 rounded-lg bg-canvas object-cover"
                           />
                         ) : (
-                          <span className="w-8 h-8 rounded-md bg-gray-100 dark:bg-slate-700 flex items-center justify-center text-gray-500">
+                          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-canvas text-faint">
                             <i className="bi bi-box-seam"></i>
                           </span>
                         )}
                         <div className="min-w-0">
-                          <p className="truncate">{firstItem?.productName ?? "—"}</p>
+                          <p className="truncate font-semibold">{firstItem?.productName ?? "—"}</p>
                           {extraCount > 0 && (
-                            <p className="text-xs text-gray-400">+{extraCount} more</p>
+                            <p className="text-xs text-faint">+{extraCount} more</p>
                           )}
                         </div>
                       </div>
                     </td>
-                    <td className="p-3 text-gray-500 dark:text-gray-400">{formatDate(row.createdAt)}</td>
-                    <td className="p-3 text-gray-700 dark:text-gray-200">{formatMoney(row.total)}</td>
-                    <td className="p-3">
-                      <span className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-300">
-                        <span className={`w-2 h-2 rounded-full ${paid ? "bg-[#21C45D]" : "bg-red-400"}`}></span>
+                    <td>{formatDate(row.createdAt)}</td>
+                    <td className="font-semibold text-ink">{formatMoney(row.total)}</td>
+                    <td>
+                      <span className={`badge ${paid ? "badge-success" : "badge-danger"}`}>
+                        <span className="dot" />
                         {prettyLabel(row.paymentStatus)}
                       </span>
                     </td>
-                    <td className="p-3">
-                      <span className={`inline-flex items-center gap-2 ${statusColor(row.status)}`}>
+                    <td>
+                      <span className={statusBadge(row.status)}>
                         <i className={`bi ${statusIcon(row.status)}`}></i>
                         {prettyLabel(row.status)}
                       </span>
@@ -273,11 +284,11 @@ export default function OrderManagment() {
           </table>
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-3 mt-5 text-sm text-gray-500 dark:text-gray-400">
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-3 text-sm text-muted">
           <button
             disabled={currentPage <= 1}
             onClick={() => setPage((p) => Math.max(1, p - 1))}
-            className="inline-flex items-center gap-2 hover:text-[#4EA674] disabled:opacity-40 disabled:hover:text-inherit"
+            className="inline-flex items-center gap-2 font-semibold hover:text-brand disabled:opacity-40 disabled:hover:text-inherit"
           >
             <i className="bi bi-arrow-left"></i> Previous
           </button>
@@ -289,11 +300,10 @@ export default function OrderManagment() {
                   {prev && n - prev > 1 && <span className="px-1">—</span>}
                   <button
                     onClick={() => setPage(n)}
-                    className={`w-8 h-8 rounded-full ${
-                      n === currentPage
-                        ? "bg-[#4EA674] text-white"
-                        : "hover:bg-gray-100 dark:hover:bg-slate-700"
-                    }`}
+                    className={`h-8 w-8 rounded-full text-sm font-semibold ${n === currentPage
+                      ? "bg-brand text-white"
+                      : "hover:bg-brand-soft"
+                      }`}
                   >
                     {n}
                   </button>
@@ -304,7 +314,7 @@ export default function OrderManagment() {
           <button
             disabled={currentPage >= totalPages}
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-            className="inline-flex items-center gap-2 hover:text-[#4EA674] disabled:opacity-40 disabled:hover:text-inherit"
+            className="inline-flex items-center gap-2 font-semibold hover:text-brand disabled:opacity-40 disabled:hover:text-inherit"
           >
             Next <i className="bi bi-arrow-right"></i>
           </button>

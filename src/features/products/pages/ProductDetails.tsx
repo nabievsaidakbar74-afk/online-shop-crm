@@ -4,18 +4,15 @@ import { useNavigate, useParams } from "react-router-dom"
 import useProductsDetail from "../hooks/useProductsDetail"
 import ProductDrawer from "../components/ProductDrawer"
 
-const pageWrap =
-    "p-5 space-y-5 overflow-y-auto h-[calc(100vh-6rem)] bg-[#F3F4F6] dark:bg-slate-900"
-
-const card =
-    "rounded-2xl border bg-white border-gray-100 shadow-[0_1px_3px_rgba(0,0,0,0.04)] dark:bg-slate-800 dark:border-slate-700/60 dark:shadow-none"
+const pageWrap = "page-shell space-y-5"
+const card = "surface"
 
 const fallbackImg = "https://placehold.co/600x600?text=No+Image"
 
 function SectionTitle({ icon, title, subtitle }: { icon: string; title: string; subtitle?: string }) {
     return (
         <div className="flex items-center gap-3">
-            <span className="w-9 h-9 shrink-0 rounded-xl bg-[#4EA674]/10 text-[#4EA674] flex items-center justify-center">
+            <span className="w-9 h-9 shrink-0 rounded-xl bg-[#2E9A62]/10 text-[#2E9A62] flex items-center justify-center">
                 <i className={`bi ${icon}`} />
             </span>
             <div>
@@ -56,11 +53,11 @@ function StatusPill({ active, activeText, inactiveText }: { active?: boolean; ac
     return (
         <span
             className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium ${active
-                ? "bg-[#4EA674]/10 text-[#4EA674]"
+                ? "bg-[#2E9A62]/10 text-[#2E9A62]"
                 : "bg-rose-50 text-rose-500 dark:bg-rose-500/10 dark:text-rose-300"
                 }`}
         >
-            <span className={`w-1.5 h-1.5 rounded-full ${active ? "bg-[#4EA674]" : "bg-rose-400"}`} />
+            <span className={`w-1.5 h-1.5 rounded-full ${active ? "bg-[#2E9A62]" : "bg-rose-400"}`} />
             {active ? activeText : inactiveText}
         </span>
     )
@@ -125,7 +122,7 @@ export default function ProductDetails() {
                     </p>
                     <button
                         onClick={() => navigate("/product")}
-                        className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#4EA674] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#3d8b5f]"
+                        className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#2E9A62] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#21764A]"
                     >
                         <i className="bi bi-arrow-left" /> Mahsulotlarga qaytish
                     </button>
@@ -141,14 +138,14 @@ export default function ProductDetails() {
                     <div className="flex items-center gap-3">
                         <button
                             onClick={() => navigate("/product")}
-                            className="w-10 h-10 rounded-xl border border-gray-200 bg-white text-gray-600 hover:text-[#4EA674] hover:border-[#4EA674]/40 transition-colors dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:text-[#4EA674]"
+                            className="w-10 h-10 rounded-xl border border-gray-200 bg-white text-gray-600 hover:text-[#2E9A62] hover:border-[#2E9A62]/40 transition-colors dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:text-[#2E9A62]"
                         >
                             <i className="bi bi-arrow-left text-lg" />
                         </button>
                         <div className="text-sm">
                             <button
                                 onClick={() => navigate("/product")}
-                                className="text-gray-400 hover:text-[#4EA674] transition-colors dark:text-slate-400"
+                                className="text-gray-400 hover:text-[#2E9A62] transition-colors dark:text-slate-400"
                             >
                                 Products
                             </button>
@@ -164,14 +161,14 @@ export default function ProductDetails() {
                         </div>
                         <button
                             onClick={() => setEditOpen(true)}
-                            className="inline-flex items-center gap-2 rounded-xl bg-[#4EA674] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#3d8b5f]"
+                            className="inline-flex items-center gap-2 rounded-xl bg-[#2E9A62] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#21764A]"
                         >
                             <i className="bi bi-pencil-square" /> Tahrirlash
                         </button>
                     </div>
                 </div>
 
-                <div className="relative overflow-hidden rounded-3xl bg-linear-to-r from-[#4EA674] to-[#2f7f56] p-6">
+                <div className="relative overflow-hidden rounded-3xl bg-linear-to-r from-[#2E9A62] to-[#1B6B42] p-6">
                     {images[0]?.url && (
                         <img
                             src={images[0].url}
@@ -192,10 +189,10 @@ export default function ProductDetails() {
                                 <div className="flex flex-wrap items-center gap-2">
                                     <h1 className="text-2xl font-bold text-white truncate">{product?.name}</h1>
                                     <span
-                                        className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ${product?.isActive ? "bg-white text-[#2f7f56]" : "bg-white/20 text-white"
+                                        className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ${product?.isActive ? "bg-white text-[#1B6B42]" : "bg-white/20 text-white"
                                             }`}
                                     >
-                                        <span className={`w-1.5 h-1.5 rounded-full ${product?.isActive ? "bg-[#4EA674]" : "bg-white/70"}`} />
+                                        <span className={`w-1.5 h-1.5 rounded-full ${product?.isActive ? "bg-[#2E9A62]" : "bg-white/70"}`} />
                                         {product?.isActive ? "Active" : "Inactive"}
                                     </span>
                                 </div>
@@ -257,13 +254,13 @@ export default function ProductDetails() {
                                             key={img.id}
                                             onClick={() => setActiveImage(index)}
                                             className={`relative w-18 h-18 rounded-xl overflow-hidden border-2 transition-colors ${index === activeImage
-                                                ? "border-[#4EA674]"
+                                                ? "border-[#2E9A62]"
                                                 : "border-gray-100 hover:border-gray-300 dark:border-slate-700 dark:hover:border-slate-500"
                                                 }`}
                                         >
                                             <img src={img.url} alt={img.alt} className="w-full h-full object-cover" />
                                             {img.isMain && (
-                                                <span className="absolute bottom-0 inset-x-0 bg-[#4EA674] text-[9px] font-medium text-white text-center">
+                                                <span className="absolute bottom-0 inset-x-0 bg-[#2E9A62] text-[9px] font-medium text-white text-center">
                                                     Main
                                                 </span>
                                             )}
@@ -279,7 +276,7 @@ export default function ProductDetails() {
                             </div>
 
                             {product?.shortDescription && (
-                                <p className="rounded-xl bg-[#4EA674]/5 px-4 py-3 text-sm font-medium text-gray-700 dark:bg-slate-900/40 dark:text-slate-200">
+                                <p className="rounded-xl bg-[#2E9A62]/5 px-4 py-3 text-sm font-medium text-gray-700 dark:bg-slate-900/40 dark:text-slate-200">
                                     {product.shortDescription}
                                 </p>
                             )}
@@ -307,7 +304,7 @@ export default function ProductDetails() {
                                         >
                                             <div className="flex items-center justify-between gap-2 mb-3">
                                                 <span className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-gray-700 dark:text-slate-200">
-                                                    <i className="bi bi-upc text-[#4EA674]" />
+                                                    <i className="bi bi-upc text-[#2E9A62]" />
                                                     {variant.sku || "—"}
                                                 </span>
                                                 <StatusPill active={variant.isActive} activeText="Faol" inactiveText="Nofaol" />
@@ -324,7 +321,7 @@ export default function ProductDetails() {
                                             <div className="flex items-end justify-between gap-3">
                                                 <div>
                                                     <p className="text-[11px] text-gray-400 dark:text-slate-400">Narxi</p>
-                                                    <p className="text-sm font-bold text-[#4EA674]">{formatPrice(variant.price)}</p>
+                                                    <p className="text-sm font-bold text-[#2E9A62]">{formatPrice(variant.price)}</p>
                                                 </div>
                                                 <div className="text-right">
                                                     <p className="text-[11px] text-gray-400 dark:text-slate-400">Qoldiq</p>
@@ -352,7 +349,7 @@ export default function ProductDetails() {
                             </div>
 
                             <div className="flex items-end gap-2">
-                                <span className="text-2xl font-bold text-[#4EA674]">{formatPrice(product?.price)}</span>
+                                <span className="text-2xl font-bold text-[#2E9A62]">{formatPrice(product?.price)}</span>
                                 {product?.discountPercent > 0 && (
                                     <span className="mb-1 rounded-full bg-rose-50 px-2 py-0.5 text-[11px] font-medium text-rose-500 dark:bg-rose-500/10 dark:text-rose-300">
                                         -{product.discountPercent}%
@@ -386,7 +383,7 @@ export default function ProductDetails() {
                             </div>
                             <div className="h-2 w-full rounded-full bg-gray-100 overflow-hidden dark:bg-slate-700">
                                 <div
-                                    className={`h-full rounded-full transition-all ${isLowStock ? "bg-amber-400" : "bg-[#4EA674]"}`}
+                                    className={`h-full rounded-full transition-all ${isLowStock ? "bg-amber-400" : "bg-[#2E9A62]"}`}
                                     style={{ width: `${stockPercent}%` }}
                                 />
                             </div>

@@ -1,11 +1,11 @@
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import useCategories from "../hooks/useCategories"
 import useDeleteCategory from "../hooks/useDeleteCategory"
 import { Button, Popconfirm, Space, Table } from "antd"
 import { useSelector } from "react-redux"
 import CategoryModal from "./CategoryModal"
 import type { CategoryType } from "../types/categories"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
 
 function CategoryThumb({ src, className }: { src?: string | null; className: string }) {
   if (!src) {
@@ -35,6 +35,15 @@ export default function Categori() {
   const [activeTab, setActiveTab] = useState<"all" | "active" | "hidden">("all")
   const [search, setSearch] = useState("")
   const [open, setOpen] = useState(false)
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  useEffect(() => {
+    if (searchParams.get("create") !== "1") return
+    setOpen(true)
+    const next = new URLSearchParams(searchParams)
+    next.delete("create")
+    setSearchParams(next, { replace: true })
+  }, [searchParams, setSearchParams])
   const isDark = useSelector((state: { theme: { isDark: boolean } }) => state.theme.isDark)
 
   const categories: CategoryType[] = data?.data ?? []
@@ -119,13 +128,13 @@ export default function Categori() {
   ]
 
   return (
-    <div className="p-5 space-y-4 bg-[#F3F4F6] dark:bg-slate-900 overflow-y-auto h-[calc(100vh-6rem)] ">
+    <div className="page-shell space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-xl font-semibold text-gray-900 dark:text-white">Categories</h1>
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="inline-flex items-center gap-2 rounded-full bg-[#4EA674] text-white text-sm px-4 py-2 hover:bg-[#3d8b5f] transition-colors"
+          className="btn-primary"
         >
           <i className="bi bi-plus-lg"></i> Add Category
         </button>
@@ -137,7 +146,7 @@ export default function Categori() {
             key={item.id}
             type="button"
             onClick={() => navigate(`/categori/${item.id}`)}
-            className="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)] flex flex-col items-center justify-center gap-3 min-h-27.5 border border-transparent hover:border-[#4EA674] transition-colors"
+            className="surface flex min-h-28 flex-col items-center justify-center gap-3 p-5 transition-colors hover:border-brand"
           >
             <CategoryThumb src={item.image} className="w-10 h-10 rounded-lg object-cover" />
             <span className="text-sm text-gray-700 dark:text-gray-200 text-center line-clamp-1">{item.name}</span>
@@ -145,32 +154,31 @@ export default function Categori() {
         ))}
       </div>
 
-      <div className="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <div className="surface p-4 sm:p-5">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
           <div className="flex flex-wrap items-center gap-4 text-sm">
             {tabs.map((tab) => (
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
-                className={`pb-1 border-b-2 transition-colors ${activeTab === tab.key
-                  ? "border-[#4EA674] text-gray-900 dark:text-white font-medium"
-                  : "border-transparent text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                className={`border-b-2 pb-2 text-sm font-semibold transition-colors ${activeTab === tab.key
+                  ? "border-brand text-ink"
+                  : "border-transparent text-faint hover:text-muted"
                   }`}
               >
                 {tab.label}
               </button>
             ))}
           </div>
-          <div className="flex items-center gap-2 rounded-full border border-gray-200 dark:border-slate-600 px-3 py-1.5">
+          <label className="search-field w-full sm:w-56">
+            <i className="bi bi-search text-sm text-faint"></i>
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search category"
-              className="bg-transparent outline-none text-sm text-gray-700 dark:text-white placeholder-gray-400 w-40"
             />
-            <i className="bi bi-search text-gray-400 text-sm"></i>
-          </div>
+          </label>
         </div>
 
         <Table<CategoryType>

@@ -1,6 +1,14 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
+import { createContext, useContext, useState, type Dispatch, type ReactNode, type SetStateAction } from "react";
 
-const UserContext = createContext()
+type UserState = {
+    user: userType | null
+    setUser: Dispatch<SetStateAction<userType | null>>
+}
+
+const UserContext = createContext<UserState>({
+    user: null,
+    setUser: () => {},
+})
 
 
 export interface userType {

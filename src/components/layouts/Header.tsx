@@ -1,9 +1,10 @@
+import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import UserImg from "../../assets/svg/userImage.png"
 import { actionTheme } from "../../store"
 import { useLocation } from "react-router-dom"
 import { useUser } from "../../features/auth/contexts/UserContext"
-
+import CommandPalette from "./CommandPalette"
 
 const titles: Record<string, string> = {
     "/": "Dashboard",
@@ -11,58 +12,91 @@ const titles: Record<string, string> = {
     "/orderManagment": "Order Management",
     "/customer": "Customers",
     "/categori": "Categories",
-    "/product": "Product",
+    "/product": "Products",
     "/profile": "Profile",
     "/bprofile": "Profile",
-    "/brand":"Brands"
+    "/brand": "Brands",
+    "/banners": "Banners",
 }
 
+function resolveTitle(pathname: string) {
+    if (titles[pathname]) return titles[pathname]
+    if (pathname.startsWith("/orderManagment/")) return "Order"
+    if (pathname.startsWith("/product/")) return "Product"
+    if (pathname.startsWith("/categori/")) return "Category"
+    return "Dashboard"
+}
 
-
-
-export default function Header() {
-
-    const { user }:any = useUser()
-
+export default function Header({ onMenu }: { onMenu: () => void }) {
+    const { user }: any = useUser()
     const { pathname } = useLocation()
-    const title = titles[pathname] ?? "Dashboard"
-    const isDark = useSelector((state) => state.theme.isDark)
+    const title = resolveTitle(pathname)
+    const isDark = useSelector((state: { theme: { isDark: boolean } }) => state.theme.isDark)
     const dispatch = useDispatch()
+    const [paletteOpen, setPaletteOpen] = useState(false)
+
+    useEffect(() => {
+        const onKey = (event: KeyboardEvent) => {
+            if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+                event.preventDefault()
+                setPaletteOpen((open) => !open)
+            }
+        }
+        window.addEventListener("keydown", onKey)
+        return () => window.removeEventListener("keydown", onKey)
+    }, [])
 
     return (
-        <div className="h-24 w-full p-[35px_25px] flex justify-between items-center bg-white dark:bg-slate-800">
-            <p className="font-bold text-2xl">{title}</p>
-            <div className="flex items-center gap-8">
-                <div className="bg-[#F9FAFB] dark:bg-slate-700 p-[8px_27px] rounded-full flex items-center gap-1.5 border border-gray-200 dark:border-slate-600 focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100 transition-all duration-200">
-                    <input
-                        type="text"
-                        placeholder="Search data, users, or reports"
-                        className="w-55 bg-transparent outline-none text-sm text-gray-700 dark:text-white placeholder-gray-400 dark:placeholder-gray-400"
-                    />
-                    <i className="bi bi-search text-gray-400"></i>
-                </div>
-                <i className="bi bi-bell"></i>
-                <button
-                    onClick={() => dispatch(actionTheme.toggleTheme())}
-                    className={`relative w-16 h-9 flex items-center rounded-full p-1 cursor-pointer transition-colors duration-300 ${isDark ? 'bg-gray-700' : 'bg-[#EBF7EE]'
-                        }`}
-                >
-                    {/* Dumaloq harakatlanuvchi sharikcha */}
-                    <div
-                        className={`w-7 h-7 bg-white rounded-full shadow-md flex items-center justify-center transform transition-transform duration-300 ${isDark ? 'translate-x-7' : 'translate-x-0'
-                            }`}
-                    >
-                        {isDark ? (
-                            /* Oy ikonka (Dark Mode) */
-                            <i className="bi bi-moon-stars-fill text-slate-800 text-sm"></i>
-                        ) : (
-                            /* Quyosh ikonka (Light Mode) */
-                            <i className="bi bi-sun-fill text-amber-500 text-sm"></i>
-                        )}
-                    </div>
+        <>
+        <header className="bar-h flex shrink-0 items-center justify-between gap-3 border-b border-line bg-surface px-4 md:px-6">
+            <div className="flex min-w-0 items-center gap-2">
+                <button type="button" onClick={onMenu} className="icon-btn lg:hidden" aria-label="Open menu">
+                    <i className="bi bi-list text-lg" />
                 </button>
-                <img src={user ? user?.avatar : UserImg} alt="" className="w-10 h-10 rounded-full object-cover shrink-0 border border-gray-200 dark:border-slate-600" />
+                <h1 className="truncate text-[17px] font-bold tracking-[-0.03em] text-ink">{title}</h1>
             </div>
-        </div>
+
+            <div className="flex items-center gap-2 sm:gap-3">
+                <button
+                    type="button"
+                    onClick={() => setPaletteOpen(true)}
+                    className="search-field hidden w-[220px] text-left md:flex lg:w-[260px]"
+                >
+                    <i className="bi bi-search text-sm text-faint" />
+                    <span className="flex-1 text-[13px] text-faint">Search</span>
+                    <kbd className="kbd">Ctrl K</kbd>
+                </button>
+                <button
+                    type="button"
+                    onClick={() => setPaletteOpen(true)}
+                    className="icon-btn md:hidden"
+                    aria-label="Search"
+                >
+                    <i className="bi bi-search" />
+                </button>
+                <button type="button" className="icon-btn" aria-label="Notifications">
+                    <i className="bi bi-bell" />
+                </button>
+                <button
+                    type="button"
+                    onClick={() => dispatch(actionTheme.toggleTheme())}
+                    className={`relative flex h-8 w-14 items-center rounded-full p-1 transition-colors duration-200 ${isDark ? "bg-[#243042]" : "bg-brand-soft"}`}
+                    aria-label="Toggle theme"
+                >
+                    <span
+                        className={`flex h-6 w-6 items-center justify-center rounded-full bg-white shadow-sm transition-transform duration-200 ${isDark ? "translate-x-6" : "translate-x-0"}`}
+                    >
+                        <i className={`bi text-xs ${isDark ? "bi-moon-stars-fill text-slate-700" : "bi-sun-fill text-amber-500"}`} />
+                    </span>
+                </button>
+                <img
+                    src={user?.avatar || UserImg}
+                    alt=""
+                    className="h-9 w-9 rounded-full object-cover ring-1 ring-line"
+                />
+            </div>
+        </header>
+        <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
+        </>
     )
 }

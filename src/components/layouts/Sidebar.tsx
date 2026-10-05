@@ -1,12 +1,33 @@
-import { NavLink, useNavigate } from "react-router-dom"
+import type { Dispatch, SetStateAction } from "react"
+import { NavLink, useLocation, useNavigate } from "react-router-dom"
 import LOGO from "../../assets/svg/DealPort.svg"
+import MARK from "../../assets/svg/DealPortMark.svg"
 import UserImg from "../../assets/svg/userImage.png"
 import { useUser } from "../../features/auth/contexts/UserContext"
 
-export default function Sidebar({ open, setOpen }) {
-    const { user }: any = useUser()
+const links = [
+    { to: "/dashboard", icon: "bi-house-door-fill", label: "Dashboard" },
+    { to: "/orderManagment", icon: "bi-cart3", label: "Order Management" },
+    { to: "/customer", icon: "bi-people", label: "Customers" },
+    { to: "/categori", icon: "bi-intersect", label: "Categories" },
+    { to: "/product", icon: "bi-box-seam-fill", label: "Products" },
+    { to: "/banners", icon: "bi-card-image", label: "Banner" },
+    { to: "/brand", icon: "bi-bookmark-check", label: "Brands" },
+    { to: "/profile", icon: "bi-person-fill", label: "Profile" },
+]
 
+type SidebarProps = {
+    expanded: boolean
+    setExpanded: Dispatch<SetStateAction<boolean>>
+    mobileOpen: boolean
+    onNavigate: () => void
+}
+
+export default function Sidebar({ expanded, setExpanded, mobileOpen, onNavigate }: SidebarProps) {
+    const { user }: any = useUser()
     const navigate = useNavigate()
+    const { pathname } = useLocation()
+    const showLabels = expanded || mobileOpen
 
     const handleLogout = () => {
         localStorage.removeItem("crmAccessToken")
@@ -14,116 +35,100 @@ export default function Sidebar({ open, setOpen }) {
         navigate("/login")
     }
 
-
-
-
     return (
-        <div className={`
-            ${open ? "w-3xs" : "w-18"}
-            bg-white dark:bg-slate-800 h-screen
-            shadow-[0px_0px_13px_#ccc] z-10 dark:shadow-none
-            p-5 transition-all duration-280
-            flex flex-col
-          `}>
-
-            <div className={`flex justify-between ${!open && "justify-center items-center"}`}>
-                {
-
-                    open && <img src={LOGO} alt="" />
-                }
-                {
-                    open ? <i onClick={() => setOpen(state => !state)} className="bi bi-caret-left-square cursor-pointer"></i>
-                        : <i onClick={() => setOpen(state => !state)} className="bi bi-caret-right-square cursor-pointer"></i>
-                }
+        <aside
+            className={`
+                fixed inset-y-0 left-0 z-40 flex h-dvh w-[248px] flex-col
+                border-r border-line bg-surface
+                transition-transform duration-200 ease-out
+                ${mobileOpen ? "translate-x-0" : "-translate-x-full"}
+                lg:static lg:z-auto lg:translate-x-0 lg:shrink-0
+                ${expanded ? "lg:w-[248px]" : "lg:w-[76px] sidebar-collapsed"}
+            `}
+        >
+            <div className={`flex items-center px-3 ${showLabels ? "bar-h justify-between" : "flex-col justify-center gap-2 py-4"}`}>
+                {showLabels ? (
+                    <img src={LOGO} alt="Dealport" className="h-6 w-auto" />
+                ) : (
+                    <img src={MARK} alt="Dealport" className="h-7 w-7" />
+                )}
+                <button
+                    type="button"
+                    onClick={() => {
+                        if (window.innerWidth < 1024) onNavigate()
+                        else setExpanded((state) => !state)
+                    }}
+                    className="sidebar-toggle"
+                    aria-label={showLabels ? "Collapse sidebar" : "Expand sidebar"}
+                >
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                        <rect x="2.2" y="3.2" width="13.6" height="11.6" rx="2.4" stroke="currentColor" strokeWidth="1.4" />
+                        <path d="M7 3.6v10.8" stroke="currentColor" strokeWidth="1.4" />
+                        <path
+                            d={showLabels ? "M12.2 7.1 9.8 9l2.4 1.9" : "M9.8 7.1 12.2 9 9.8 10.9"}
+                            stroke="currentColor"
+                            strokeWidth="1.4"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                    </svg>
+                </button>
             </div>
-            {
-                open ? <p className="m-[10px_0px] text-[rgba(106,113,127,1)]">Main menu</p> : <p className={`m-[10px_0px] text-[rgba(106,113,127,1)] ${!open && "m-[0px_auto]"}`}>Main</p>
-            }
-            <div>
-                <NavLink className="navbar-link" to="/dashboard">
-                    <div className={` text-[rgba(106,113,127,1)] ${!open && "justify-center items-center"}text-[rgba(106,113,127,1)] w-full flex gap-3 p-[9px_16px] rounded-md border-0 transition-all duration-200 hover:bg-[#daffeb] dark:hover:bg-[#1e422f] `}>
-                        <i className="bi bi-house-door-fill"></i>
-                        {
-                            open && <p>Dashboard</p>
-                        }
+
+            <p className={`px-5 pb-2 text-[11px] font-bold uppercase tracking-[0.14em] text-faint ${showLabels ? "" : "text-center px-0"}`}>
+                {showLabels ? "Main menu" : "Menu"}
+            </p>
+
+            <nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-3 pb-3">
+                {links.map((item) => {
+                    const active = pathname === item.to
+                        || (item.to === "/dashboard" && pathname === "/")
+                        || (item.to === "/profile" && (pathname === "/bprofile" || pathname.startsWith("/profile")))
+                        || (item.to !== "/dashboard" && item.to !== "/profile" && pathname.startsWith(`${item.to}/`))
+                    return (
+                        <NavLink
+                            key={item.to}
+                            to={item.to}
+                            title={item.label}
+                            onClick={onNavigate}
+                            className={`navbar-link ${active ? "active" : ""}`}
+                        >
+                            <div className="nav-pill">
+                                <i className={`bi ${item.icon} nav-icon`} />
+                                {showLabels && <span className="truncate">{item.label}</span>}
+                            </div>
+                        </NavLink>
+                    )
+                })}
+            </nav>
+
+            <div className="mt-auto space-y-2 px-3 pb-4">
+                <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="nav-pill nav-pill-danger w-full"
+                >
+                    <i className="bi bi-box-arrow-left nav-icon" />
+                    {showLabels && <span>Log out</span>}
+                </button>
+               
+                    <div className="profile-card">
+                        <img
+                            src={user?.avatar || UserImg}
+                            alt=""
+                            className="h-9 w-9 shrink-0 rounded-full object-cover"
+                        />
+                        {showLabels && (
+                            <div className="min-w-0 flex-1">
+                                <p className="profile-name truncate text-sm font-semibold text-ink">
+                                    {user?.firstName} {user?.lastName}
+                                </p>
+                                <p className="profile-email truncate text-xs text-faint">{user?.email}</p>
+                            </div>
+                        )}
                     </div>
-                </NavLink>
-                <NavLink className="navbar-link" to="/orderManagment">
-                    <div className={` text-[rgba(106,113,127,1)] ${!open && "justify-center items-center"}text-[rgba(106,113,127,1)] w-full flex gap-3 p-[9px_16px] rounded-md border-0 transition-all duration-200 hover:bg-[#daffeb] dark:hover:bg-[#1e422f] `}>
-                        <i className="bi bi-cart3"></i>
-                        {
-                            open && <p>Order Management</p>
-                        }
-                    </div>
-                </NavLink>
-                <NavLink className="navbar-link" to="/customer">
-                    <div className={` text-[rgba(106,113,127,1)] ${!open && "justify-center items-center"}text-[rgba(106,113,127,1)] w-full flex gap-3 p-[9px_16px] rounded-md border-0 transition-all duration-200  hover:bg-[#daffeb] dark:hover:bg-[#1e422f] `}>
-                        <i className="bi bi-people"></i>
-                        {
-                            open && <p>Customers</p>
-                        }
-                    </div>
-                </NavLink>
-                <NavLink className="navbar-link" to="/banners">
-                    <div className={` text-[rgba(106,113,127,1)] ${!open && "justify-center items-center"}text-[rgba(106,113,127,1)] w-full flex gap-3 p-[9px_16px] rounded-md border-0 transition-all duration-200  hover:bg-[#daffeb] dark:hover:bg-[#1e422f] `}>
-                        <i className="bi bi-card-image"></i>
-                        {
-                            open && <p>Banners</p>
-                        }
-                    </div>
-                </NavLink>
-                <NavLink className="navbar-link" to="/categori">
-                    <div className={` text-[rgba(106,113,127,1)] ${!open && "justify-center items-center"}text-[rgba(106,113,127,1)] w-full flex gap-3 p-[9px_16px] rounded-md border-0 transition-all duration-200  hover:bg-[#daffeb] dark:hover:bg-[#1e422f] `}>
-                        <i className="bi bi-intersect"></i>
-                        {
-                            open && <p>Categories</p>
-                        }
-                    </div>
-                </NavLink>
-                <NavLink className="navbar-link" to="/product">
-                    <div className={` text-[rgba(106,113,127,1)] ${!open && "justify-center items-center"}text-[rgba(106,113,127,1)] w-full flex gap-3 p-[9px_16px] rounded-md border-0 transition-all duration-200  hover:bg-[#daffeb] dark:hover:bg-[#1e422f] `}>
-                        <i className="bi bi-box-seam-fill"></i>
-                        {
-                            open && <p>Products</p>
-                        }
-                    </div>
-                </NavLink>
-                <NavLink className="navbar-link" to="/brand">
-                    <div className={` text-[rgba(106,113,127,1)] ${!open && "justify-center items-center"}text-[rgba(106,113,127,1)] w-full flex gap-3 p-[9px_16px] rounded-md border-0 transition-all duration-200  hover:bg-[#daffeb] dark:hover:bg-[#1e422f] `}>
-                        <i className="bi bi-bookmark-check"></i>
-                        {
-                            open && <p>Brands</p>
-                        }
-                    </div>
-                </NavLink>
-                <NavLink className="navbar-link" to="/profile">
-                    <div className={` text-[rgba(106,113,127,1)] ${!open && "justify-center items-center"}text-[rgba(106,113,127,1)] w-full flex gap-3 p-[9px_16px] rounded-md border-0 transition-all duration-200  hover:bg-[#daffeb] dark:hover:bg-[#1e422f] `}>
-                        <i className="bi bi-person-fill"></i>
-                        {
-                            open && <p>Profile</p>
-                        }
-                    </div>
-                </NavLink>
+                
             </div>
-            <button
-                type="button"
-                onClick={handleLogout}
-                className={`mt-auto w-full flex gap-3 p-[9px_16px] rounded-md border-0 cursor-pointer transition-all duration-200 text-[#dc2626] hover:bg-red-50 dark:hover:bg-red-950/40 ${!open && "justify-center items-center"}`}
-            >
-                <i className="bi bi-box-arrow-left"></i>
-                {open && <p>Log out</p>}
-            </button>
-            <NavLink className="navbar-link" to="/bprofile">
-                <div className={`w-full flex items-center gap-3 p-2 rounded-xl border border-gray-100 dark:border-slate-600 bg-gray-50 dark:bg-slate-700/50 hover:bg-[#daffeb] dark:hover:bg-[#1e422f] transition-all duration-200 ${!open && "justify-center border-0 bg-transparent p-1"}`}>
-                    <img src={user ? user?.avatar : UserImg} alt="" className="w-10 h-10 rounded-full object-cover shrink-0" />
-                    {open && (
-                        <div className="min-w-0 flex-1">
-                            <p className="profile-name text-sm font-semibold text-gray-800 dark:text-white truncate">{user?.firstName} {user?.lastName}</p>
-                            <p className="profile-email text-xs text-gray-400 truncate">{user?.email}</p>
-                        </div>
-                    )}
-                </div>
-            </NavLink>
-        </div>
+        </aside>
     )
 }

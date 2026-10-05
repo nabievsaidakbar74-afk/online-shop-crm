@@ -2,10 +2,10 @@ import { Table, Tag, Image, Space, Button, Tooltip, Popconfirm } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import useProducts from '../hooks/useProducts'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import ProductDrawer from './ProductDrawer'
 import useDeleteProducts from '../hooks/useDeleteProducts'
-import { useNavigate } from 'react-router-dom'
 
 interface ProductType {
   id: string
@@ -54,8 +54,17 @@ interface ProductType {
 export default function Product() {
 
 const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
 
   const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    if (searchParams.get("create") !== "1") return
+    setOpen(true)
+    const next = new URLSearchParams(searchParams)
+    next.delete("create")
+    setSearchParams(next, { replace: true })
+  }, [searchParams, setSearchParams])
   const { mutate } = useDeleteProducts()
 
 
@@ -113,7 +122,7 @@ const navigate = useNavigate()
       key: "price",
       render: (price, record) => (
         <div className="flex flex-col">
-          <span className="font-bold text-sm text-[#4EA674]">
+          <span className="font-bold text-sm text-[#2E9A62]">
             {price?.toLocaleString() ?? 0} UZS
           </span>
           {record.discountPercent > 0 && (
@@ -214,10 +223,10 @@ const navigate = useNavigate()
     },
   ]
   return (
-    <div className="p-5 space-y-5 overflow-y-auto h-[calc(100vh-6rem)] bg-[#F3F4F6] dark:bg-slate-900">
+    <div className="page-shell space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <span className="w-11 h-11 shrink-0 rounded-2xl bg-[#4EA674]/10 text-[#4EA674] flex items-center justify-center text-lg">
+          <span className="w-11 h-11 shrink-0 rounded-2xl bg-[#2E9A62]/10 text-[#2E9A62] flex items-center justify-center text-lg">
             <i className="bi bi-box-seam" />
           </span>
           <div>
@@ -231,13 +240,13 @@ const navigate = useNavigate()
         <button
           onClick={() => setOpen(state => !state)}
           type="button"
-          className="inline-flex items-center gap-2 rounded-full bg-[#4EA674] px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#3d8b5f]"
+          className="btn-primary"
         >
           <i className="bi bi-plus-lg" /> Add Product
         </button>
       </div>
 
-      <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)] dark:border-slate-700/60 dark:bg-slate-800 dark:shadow-none">
+      <div className="surface p-4">
         <div className="overflow-x-auto">
           <Table
             columns={columns}

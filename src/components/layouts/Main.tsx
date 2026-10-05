@@ -1,26 +1,46 @@
-import { useEffect, useState } from 'react'
-import Sidebar from './Sidebar'
-import Header from './Header'
-import { useSelector } from 'react-redux'
-import { Outlet } from 'react-router-dom'
+import { useEffect, useState } from "react"
+import Sidebar from "./Sidebar"
+import Header from "./Header"
+import { useSelector } from "react-redux"
+import { Outlet } from "react-router-dom"
 
 export default function Main() {
-    const isDark = useSelector((state) => state.theme.isDark)
-    const [open, setOpen] = useState(true)
+    const isDark = useSelector((state: { theme: { isDark: boolean } }) => state.theme.isDark)
+    const [expanded, setExpanded] = useState(true)
+    const [mobileOpen, setMobileOpen] = useState(false)
+
     useEffect(() => {
-        if (isDark) {
-            document.documentElement.classList.add('dark')
-        } else {
-            document.documentElement.classList.remove('dark')
-        }
+        document.documentElement.classList.toggle("dark", isDark)
     }, [isDark])
+
+    useEffect(() => {
+        const onResize = () => {
+            if (window.innerWidth >= 1024) setMobileOpen(false)
+        }
+        window.addEventListener("resize", onResize)
+        return () => window.removeEventListener("resize", onResize)
+    }, [])
+
     return (
-        <div className="flex min-h-screen w-full overflow-x-hidden bg-white text-gray-900 dark:bg-slate-900 dark:text-white">
-            <Sidebar open={open} setOpen={setOpen} />
-            <div className='flex-1 flex flex-col min-w-0'>
-                <Header />
-                <main className='flex-1'>
-                    <Outlet></Outlet>
+        <div className="flex h-dvh overflow-hidden bg-canvas text-ink">
+            {mobileOpen && (
+                <button
+                    type="button"
+                    aria-label="Close menu"
+                    className="fixed inset-0 z-30 bg-[#0e141c]/45 lg:hidden"
+                    onClick={() => setMobileOpen(false)}
+                />
+            )}
+            <Sidebar
+                expanded={expanded}
+                setExpanded={setExpanded}
+                mobileOpen={mobileOpen}
+                onNavigate={() => setMobileOpen(false)}
+            />
+            <div className="flex min-w-0 flex-1 flex-col">
+                <Header onMenu={() => setMobileOpen(true)} />
+                <main className="min-h-0 flex-1">
+                    <Outlet />
                 </main>
             </div>
         </div>

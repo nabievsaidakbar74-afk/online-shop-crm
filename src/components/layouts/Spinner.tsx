@@ -4,7 +4,7 @@ export default function Spinner() {
     return (
 
 
-        <div className="w-full h-screen flex items-center justify-center">
+        <div className="grid h-dvh w-full place-items-center bg-canvas">
             <Spin size="large" />
         </div>
     )

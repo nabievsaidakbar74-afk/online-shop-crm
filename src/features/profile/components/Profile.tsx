@@ -4,18 +4,15 @@ import useMe from "../hooks/usMe"
 import useUpdateProfile from "../hooks/useUpdateProfile"
 import useUpdatePassword from "../hooks/useUpdatePassword"
 
-const pageWrap =
-  "p-5 space-y-5 overflow-y-auto h-[calc(100vh-6rem)] bg-[#F3F4F6] dark:bg-slate-900"
-
-const card =
-  "rounded-2xl border bg-white border-gray-100 shadow-[0_1px_3px_rgba(0,0,0,0.04)] dark:bg-slate-800 dark:border-slate-700/60 dark:shadow-none"
+const pageWrap = "page-shell space-y-5"
+const card = "surface"
 
 const fallbackAvatar = "https://placehold.co/240x240?text=Avatar"
 
 function SectionTitle({ icon, title, subtitle }: { icon: string; title: string; subtitle?: string }) {
   return (
     <div className="flex items-center gap-3">
-      <span className="w-9 h-9 shrink-0 rounded-xl bg-[#4EA674]/10 text-[#4EA674] flex items-center justify-center">
+      <span className="w-9 h-9 shrink-0 rounded-xl bg-[#2E9A62]/10 text-[#2E9A62] flex items-center justify-center">
         <i className={`bi ${icon}`} />
       </span>
       <div>
@@ -122,7 +119,7 @@ export default function Profile() {
 
   return (
     <div className={pageWrap}>
-      <div className="relative overflow-hidden rounded-3xl bg-linear-to-r from-[#4EA674] to-[#2f7f56] p-6">
+      <div className="relative overflow-hidden rounded-3xl bg-linear-to-r from-[#2E9A62] to-[#1B6B42] p-6">
         {avatar && (
           <img src={avatar} alt="" className="absolute inset-0 w-full h-full object-cover opacity-20 blur-[3px]" />
         )}
@@ -142,10 +139,10 @@ export default function Profile() {
               <div className="flex flex-wrap items-center gap-2">
                 <h1 className="text-2xl font-bold text-white truncate">{fullName || "Admin"}</h1>
                 <span
-                  className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ${profile?.isActive ? "bg-white text-[#2f7f56]" : "bg-white/20 text-white"
+                  className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ${profile?.isActive ? "bg-white text-[#1B6B42]" : "bg-white/20 text-white"
                     }`}
                 >
-                  <span className={`w-1.5 h-1.5 rounded-full ${profile?.isActive ? "bg-[#4EA674]" : "bg-white/70"}`} />
+                  <span className={`w-1.5 h-1.5 rounded-full ${profile?.isActive ? "bg-[#2E9A62]" : "bg-white/70"}`} />
                   {profile?.isActive ? "Active" : "Inactive"}
                 </span>
               </div>
@@ -331,7 +328,7 @@ export default function Profile() {
             </div>
 
             <div className="flex flex-col items-center text-center">
-              <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-[#4EA674]/15 bg-gray-50 dark:bg-slate-900/40">
+              <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-[#2E9A62]/15 bg-gray-50 dark:bg-slate-900/40">
                 <img
                   src={avatar || fallbackAvatar}
                   alt=""
@@ -384,7 +381,7 @@ export default function Profile() {
                 "Parolni muntazam yangilab turing.",
               ].map((tip) => (
                 <li key={tip} className="flex gap-2">
-                  <i className="bi bi-check2 text-[#4EA674] mt-0.5" />
+                  <i className="bi bi-check2 text-[#2E9A62] mt-0.5" />
                   <span>{tip}</span>
                 </li>
               ))}

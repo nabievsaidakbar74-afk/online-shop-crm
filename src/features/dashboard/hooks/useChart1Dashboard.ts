@@ -7,7 +7,7 @@ const useChart1Dashboard = (week: "this" | "last" = "this") => {
     const { data, isLoading } = useQuery({
         queryKey: ["get-dashboard-chart-1", week],
         queryFn: () => api.get(`/admin/dashboard/weekly-report`, { params: { week } })
-            .then((res) => res.data)
+            .then((res) => res.data?.data)
     })
     return { data, isLoading }
 }

@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Table, Tag, Image, Button, Form, Popconfirm, Tooltip } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import useBrands from '../hooks/useBrands';
@@ -16,6 +17,7 @@ export default function Brand() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingBrand, setEditingBrand] = useState<any>(null);
   const [form] = Form.useForm();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const logo = Form.useWatch('logo', form);
 
@@ -34,6 +36,14 @@ export default function Brand() {
     }
     setIsModalOpen(true);
   };
+
+  useEffect(() => {
+    if (searchParams.get("create") !== "1") return
+    showModal()
+    const next = new URLSearchParams(searchParams)
+    next.delete("create")
+    setSearchParams(next, { replace: true })
+  }, [searchParams, setSearchParams])
 
   const handleCancel = () => {
     setIsModalOpen(false);
@@ -107,7 +117,7 @@ export default function Brand() {
       key: 'productsCount',
       width: 150,
       render: (count: number) => (
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-[#4EA674]/10 px-2.5 py-1 text-xs font-medium text-[#4EA674]">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-[#2E9A62]/10 px-2.5 py-1 text-xs font-medium text-[#2E9A62]">
           <i className="bi bi-box-seam" />
           {count ?? 0} ta
         </span>
@@ -150,7 +160,7 @@ export default function Brand() {
               shape="circle"
               icon={<EditOutlined />}
               onClick={() => showModal(record)}
-              className="text-gray-500! hover:text-[#4EA674]! dark:text-slate-300!"
+              className="text-gray-500! hover:text-[#2E9A62]! dark:text-slate-300!"
             />
           </Tooltip>
           <Popconfirm
@@ -178,10 +188,10 @@ export default function Brand() {
 
   return (
     <>
-      <div className="p-5 space-y-5 overflow-y-auto h-[calc(100vh-6rem)] bg-[#F3F4F6] dark:bg-slate-900">
+      <div className="page-shell space-y-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <span className="w-11 h-11 shrink-0 rounded-2xl bg-[#4EA674]/10 text-[#4EA674] flex items-center justify-center text-lg">
+            <span className="w-11 h-11 shrink-0 rounded-2xl bg-[#2E9A62]/10 text-[#2E9A62] flex items-center justify-center text-lg">
               <i className="bi bi-award" />
             </span>
             <div>
@@ -195,7 +205,7 @@ export default function Brand() {
           <button
             type="button"
             onClick={() => showModal()}
-            className="inline-flex items-center gap-2 rounded-full bg-[#4EA674] px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#3d8b5f]"
+            className="btn-primary"
           >
             <i className="bi bi-plus-lg" /> Add Brand
           </button>
@@ -212,7 +222,7 @@ export default function Brand() {
             </Button>
           </div>
         ) : (
-          <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)] dark:border-slate-700/60 dark:bg-slate-800 dark:shadow-none">
+          <div className="surface p-4">
             <div className="overflow-x-auto">
               <Table
                 columns={columns}

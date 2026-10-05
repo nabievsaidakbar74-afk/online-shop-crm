@@ -1,6 +1,6 @@
 import { Table, Tag, Button, Space, Avatar } from "antd"
 import type { ColumnsType } from "antd/es/table"
-import { MessageOutlined, DeleteOutlined, UserOutlined, LockOutlined, UnlockOutlined } from "@ant-design/icons"
+import { UserOutlined, LockOutlined, UnlockOutlined } from "@ant-design/icons"
 import useCustomer from "../hooks/useCustomer"
 import useUpdateCustomers from "../hooks/useUpdateCustomers"
 
@@ -19,13 +19,12 @@ type CustomerRow = {
 
 export default function Customer() {
 
-  const { isPending, mutate } = useUpdateCustomers()
+  const {  mutate } = useUpdateCustomers()
 
 
   const { data, isLoading } = useCustomer()
   const customers = Array.isArray(data?.data) ? data.data : []
 
-  console.log(customers?.isActive)
 
 
 
@@ -51,7 +50,7 @@ export default function Customer() {
           <Avatar
             src={record.avatar}
             icon={!record.avatar && <UserOutlined />}
-            className="bg-[#4EA674] shrink-0"
+            className="bg-[#2E9A62] shrink-0"
           >
             {!record.avatar && `${record.firstName?.[0] || ""}${record.lastName?.[0] || ""}`}
           </Avatar>
@@ -122,7 +121,7 @@ export default function Customer() {
             onClick={() => mutate({ id: record.id, isActive: !record.isActive })}
             type="text"
             icon={record.isActive ? <LockOutlined /> : <UnlockOutlined />}
-            className="text-gray-400 hover:text-[#4EA674]! p-0 border-none shadow-none"
+            className="text-gray-400 hover:text-[#2E9A62]! p-0 border-none shadow-none"
           />
 
         </Space>
@@ -131,10 +130,10 @@ export default function Customer() {
   ]
 
   return (
-    <div className="p-5 space-y-5 overflow-y-auto overflow-x-hidden h-[calc(100vh-6rem)] bg-[#F3F4F6] dark:bg-slate-900">
+    <div className="page-shell space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <span className="w-11 h-11 shrink-0 rounded-2xl bg-[#4EA674]/10 text-[#4EA674] flex items-center justify-center text-lg">
+          <span className="w-11 h-11 shrink-0 rounded-2xl bg-[#2E9A62]/10 text-[#2E9A62] flex items-center justify-center text-lg">
             <i className="bi bi-people" />
           </span>
           <div>
@@ -146,7 +145,7 @@ export default function Customer() {
         </div>
       </div>
 
-      <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)] dark:border-slate-700/60 dark:bg-slate-800 dark:shadow-none min-w-0">
+      <div className="surface min-w-0 p-4">
         <Table
           columns={columns}
           dataSource={customers}

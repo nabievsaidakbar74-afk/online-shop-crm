@@ -13,7 +13,7 @@ import { useState } from "react";
 
 function Card({ children }: { children: React.ReactNode }) {
     return (
-        <div className="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+        <div className="surface h-full p-5">
             {children}
         </div>
     )
@@ -27,17 +27,16 @@ export default function DashboardChart1() {
 
     const [week, setWeek] = useState<"this" | "last">("this")
     const { data } = useChart1Dashboard(week)
-    console.log(data)
 
     const chartData = data?.chart?.active ?? []
     const stats = data?.stats
 
     const weekStats = [
-        { value: stats?.customers ?? 0, label: "Customers", bar: "bg-[#4EA674]" },
-        { value: stats?.totalProducts ?? 0, label: "Total Products", bar: "bg-gray-200 dark:bg-slate-600" },
-        { value: stats?.stockProducts ?? 0, label: "Stock Products", bar: "bg-gray-200 dark:bg-slate-600" },
-        { value: stats?.outOfStock ?? 0, label: "Out of Stock", bar: "bg-gray-200 dark:bg-slate-600" },
-        { value: formatShort(stats?.revenue ?? 0), label: "Revenue", bar: "bg-gray-200 dark:bg-slate-600" },
+        { value: stats?.customers ?? 0, label: "Customers", bar: "bg-brand" },
+        { value: stats?.totalProducts ?? 0, label: "Total Products", bar: "bg-line" },
+        { value: stats?.stockProducts ?? 0, label: "Stock Products", bar: "bg-line" },
+        { value: stats?.outOfStock ?? 0, label: "Out of Stock", bar: "bg-line" },
+        { value: formatShort(stats?.revenue ?? 0), label: "Revenue", bar: "bg-line" },
     ]
     const peak = chartData.reduce(
         (best: any, cur: any) => (cur.value > best.value ? cur : best),
@@ -45,31 +44,32 @@ export default function DashboardChart1() {
     )
 
 
-    const isDark = useSelector((state) => state.theme.isDark)
+    const isDark = useSelector((state: { theme: { isDark: boolean } }) => state.theme.isDark)
     const axis = isDark ? "#94a3b8" : "#9ca3af"
     const grid = isDark ? "#334155" : "#f3f4f6"
 
     return (
         <Card>
             <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-                <p className="font-medium text-gray-900 dark:text-white">
+                <p className="text-sm font-semibold text-ink">
                     Report for {week === "this" ? "this" : "last"} week
-                </p>                <div className="flex rounded-full bg-gray-100 dark:bg-slate-700 p-1 text-xs">
+                </p>
+                <div className="flex rounded-full bg-canvas p-1 text-xs">
                     <button onClick={() => setWeek("this")}
-                        className={`cursor-pointer px-3 py-1 rounded-full ${week === "this" ? "bg-white dark:bg-slate-600 text-gray-800 dark:text-white shadow-sm" : "text-gray-400"}`}>
+                        className={`cursor-pointer rounded-full px-3 py-1 font-semibold transition-colors ${week === "this" ? "bg-surface text-ink shadow-sm" : "text-faint"}`}>
                         This week
                     </button>
                     <button onClick={() => setWeek("last")}
-                        className={`cursor-pointer px-3 py-1 rounded-full ${week === "last" ? "bg-white dark:bg-slate-600 text-gray-800 dark:text-white shadow-sm" : "text-gray-400"}`}>
-                        last week
+                        className={`cursor-pointer rounded-full px-3 py-1 font-semibold transition-colors ${week === "last" ? "bg-surface text-ink shadow-sm" : "text-faint"}`}>
+                        Last week
                     </button>
                 </div>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 mb-6">
                 {weekStats.map((item) => (
                     <div key={item.label}>
-                        <p className="text-lg font-semibold text-gray-900 dark:text-white">{item.value}</p>
-                        <p className="text-xs text-gray-400 mb-2">{item.label}</p>
+                        <p className="text-lg font-bold tracking-[-0.03em] text-ink">{item.value}</p>
+                        <p className="mb-2 text-xs text-faint">{item.label}</p>
                         <div className={`h-1 rounded-full ${item.bar}`}></div>
                     </div>
                 ))}
@@ -95,13 +95,13 @@ export default function DashboardChart1() {
                                 color: isDark ? "#fff" : "#111",
                             }}
                         />
-                        <Line type="monotone" dataKey="value" stroke="#86EFAC" strokeWidth={3} dot={false} />
+                        <Line type="monotone" dataKey="value" stroke="#2E9A62" strokeWidth={2.5} dot={false} />
 
                         {peak.value > 0 && (
                             <>
-                                <ReferenceLine x={peak.day} stroke="#4EA674" strokeDasharray="4 4" />
-                                <ReferenceDot x={peak.day} y={peak.value} r={5} fill="#4EA674" stroke="#fff"
-                                    label={{ value: `${peak.day} ${formatShort(peak.value)}`, position: "top", fill: "#4EA674", fontSize: 11 }}
+                                <ReferenceLine x={peak.day} stroke="#2E9A62" strokeDasharray="4 4" />
+                                <ReferenceDot x={peak.day} y={peak.value} r={5} fill="#2E9A62" stroke="#fff"
+                                    label={{ value: `${peak.day} ${formatShort(peak.value)}`, position: "top", fill: "#2E9A62", fontSize: 11 }}
                                 />
                             </>
                         )}

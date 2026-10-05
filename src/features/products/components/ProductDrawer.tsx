@@ -46,7 +46,7 @@ function Section({
     return (
         <div className={sectionCard}>
             <div className="flex items-center gap-3 mb-4">
-                <span className="w-9 h-9 shrink-0 rounded-xl bg-[#4EA674]/10 text-[#4EA674] flex items-center justify-center">
+                <span className="w-9 h-9 shrink-0 rounded-xl bg-[#2E9A62]/10 text-[#2E9A62] flex items-center justify-center">
                     <i className={`bi ${icon}`} />
                 </span>
                 <div>
@@ -198,7 +198,7 @@ export default function ProductDrawer({
             }}
             title={
                 <div className="flex items-center gap-3">
-                    <span className="w-10 h-10 shrink-0 rounded-2xl bg-[#4EA674]/10 text-[#4EA674] flex items-center justify-center text-lg">
+                    <span className="w-10 h-10 shrink-0 rounded-2xl bg-[#2E9A62]/10 text-[#2E9A62] flex items-center justify-center text-lg">
                         <i className={`bi ${isEdit ? 'bi-pencil-square' : 'bi-bag-plus'}`} />
                     </span>
                     <div>
@@ -447,7 +447,7 @@ export default function ProductDrawer({
                                         className="rounded-xl border border-gray-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-900/50"
                                     >
                                         <div className="flex items-center justify-between mb-3">
-                                            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#4EA674]/10 px-2.5 py-0.5 text-[11px] font-medium text-[#4EA674]">
+                                            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#2E9A62]/10 px-2.5 py-0.5 text-[11px] font-medium text-[#2E9A62]">
                                                 <i className="bi bi-layers" />
                                                 Variant #{index + 1}
                                             </span>

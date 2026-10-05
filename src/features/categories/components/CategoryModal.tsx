@@ -43,7 +43,7 @@ export default function CategoryModal({ open, setOpen }: Props) {
       }}
       title={
         <div className="flex items-center gap-3">
-          <span className="w-10 h-10 rounded-full bg-[#4EA674]/10 text-[#4EA674] flex items-center justify-center text-lg">
+          <span className="w-10 h-10 rounded-full bg-[#2E9A62]/10 text-[#2E9A62] flex items-center justify-center text-lg">
             <i className="bi bi-collection" />
           </span>
           <span>

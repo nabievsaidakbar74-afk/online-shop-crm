@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom"
 import Login from "../features/auth/pages/Login"
 import Dashboard from "../features/dashboard/components/Dashboard"
 import OrderManagment from "../features/order/components/OrderManagment"
+import OrderDetail from "../features/order/pages/OrderDetail"
 import Customer from "../features/customers/components/Customer"
 import Categori from "../features/categories/components/Categori"
 import Profile from "../features/profile/components/Profile"
@@ -20,6 +21,7 @@ export default function IndexRoute() {
         <Route path="/" element={<Dashboard />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/orderManagment" element={<OrderManagment />} />
+        <Route path="/orderManagment/:id" element={<OrderDetail />} />
         <Route path="/customer" element={<Customer />} />
         <Route path="/banners" element={<Banners />} />
         <Route path="/categori" element={<Categori />} />
@@ -27,7 +29,7 @@ export default function IndexRoute() {
         <Route path="/product" element={<Product />} />
         <Route path="/product/:id" element={<ProductDetails />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/bprofile" element={<Profile />} />
+        {/* <Route path="/bprofile" element={<Profile />} /> */}
         <Route path="/brand" element={<Brand />} />
       </Route>
       <Route path="/login" element={<Login />} />
